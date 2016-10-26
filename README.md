@@ -1,5 +1,6 @@
 # Purple API
 
+[![Build Status](https://travis-ci.com/Purple-Services/api-service.svg?token=KufiHsrBkjKnC1q2gM5f&branch=dev)](https://travis-ci.com/Purple-Services/api-service)
 
 ## Deploying to Development Server
 
