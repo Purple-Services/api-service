@@ -18,4 +18,7 @@
   [:title] (content (:title x)))
 
 (defn docs []
-  (apply str (docs-template {:title "Terms of Service"})))
+  (apply str (docs-template {:title "Purple API Docs"})))
+
+
+; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; ; 

@@ -1,1 +1,386 @@
-Docs
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <link href='//fonts.googleapis.com/css?family=Lato:300,400' rel='stylesheet' type='text/css' />
+        <link href="css/pure-min.css" rel="stylesheet" />
+        <link href="css/main.css" rel="stylesheet" />
+        <link href="css/baby-blue.css" rel="stylesheet" />
+
+        <link rel="apple-touch-icon" sizes="57x57" href="/apple-icon-57x57.png">
+        <link rel="apple-touch-icon" sizes="60x60" href="/apple-icon-60x60.png">
+        <link rel="apple-touch-icon" sizes="72x72" href="/apple-icon-72x72.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="/apple-icon-76x76.png">
+        <link rel="apple-touch-icon" sizes="114x114" href="/apple-icon-114x114.png">
+        <link rel="apple-touch-icon" sizes="120x120" href="/apple-icon-120x120.png">
+        <link rel="apple-touch-icon" sizes="144x144" href="/apple-icon-144x144.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
+        <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="manifest" href="/manifest.json">
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+    </head>
+    <body class="pure-skin-wsi">
+
+        <div class="pure-g-r" id="layout">
+            
+            <a href="#menu" id="menuLink" class="pure-menu-link">
+                <span></span>
+            </a>
+
+            <div class="pure-u" id="menu">
+                <div class="pure-menu pure-menu-open">
+                    <a class="pure-menu-heading" href="/docs">Purple API</a>
+                    <ul>
+                        <li class="pure-menu-selected">
+                            <a href="#availability-check">Availability Check</a>
+                        </li>
+                        <li class="">
+                            <a href="#request-order">Request Order</a>
+                        </li>
+                        <li class="">
+                            <a href="#get-orders">Get Orders</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="pure-u-1" id="main">
+
+                <div class="header">
+                    <h1>Purple API Docs</h1>
+                    <h2></h2>
+                </div>
+
+                <div class="content">
+
+                    <h2 class="content-subhead">
+                        <a name="availability-check" />
+                        Availability Check
+                    </h2>
+                    <p>
+                        To find out the availabile options for delivery to a certain location. Requires an active user session.
+                    </p>
+
+                    <pre class="snippet" data-language="html"><code>[POST] https://api.purpleapp.com/availability</code></pre>
+
+                    <table class="pure-table pure-table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Description</th>
+                                <th>Values</th>
+                                <th>Default</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="required">
+                                <td><span style='cursor:help;' title='We require API version so that you do not experience unexpected changes when a new version is released.'>version</span></td>
+                                <td>Version of the API you're using</td>
+                                <td>An integer (e.g., 1)</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>key</td>
+                                <td>Your API key</td>
+                                <td>A string</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>user_id</td>
+                                <td>The requesting user's user ID.</td>
+                                <td>A string</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>auth_token</td>
+                                <td>Auth token of user's session.</td>
+                                <td>A string</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>lat</td>
+                                <td>Latitude of desired delivery location</td>
+                                <td>A number (e.g., -118.27367287)</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>lng</td>
+                                <td>Longitude of desired delivery location</td>
+                                <td>A number (e.g., 34.053892)</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="table-legend-right">
+                        <span style="color: #000;">Additional info upon mouse hover for some text.</span> Parameters in red are <span class="required">required</span>.
+                    </div>
+                    
+                    <p>
+                        Example POST request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-availability-check'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
+                    </p>
+                    
+                    <div id="example-availability-check" style="display: none;">
+                        POST Request:
+                        <br /><span style="color: black;">https://api.purpleapp.com/availability</span>
+                        <pre class="snippet" data-language="javascript"><code>{
+  "version": 1,
+  "key": "yekipa987654321",
+  "user_id": "G7yG674ftgebB987ncj8",
+  "auth_token": "Nmcbdhvid863hf7Gydh7hcudn3467678dufhBuxzke8734",
+  "lat": -118.27367287,
+  "lng": 34.053892
+}</code></pre>
+                        JSON Response:
+                        <pre class="snippet" data-language="javascript"><code>{
+  "success": true
+}</code></pre>
+                    </div>
+
+                    <br />
+                    <h2 class="content-subhead">
+                        <a name="request-order" />
+                        Request Order
+                    </h2>
+                    <p>
+                        To make an order request given certain parameters. Usually this endpoint is used after an Availability Check so that a user has been presented with the options available at their location.
+                    </p>
+
+                    <pre class="snippet" data-language="html"><code>[POST] https://api.purpleapp.com/orders/request</code></pre>
+
+                    <table class="pure-table pure-table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Description</th>
+                                <th>Values</th>
+                                <th>Default</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="required">
+                                <td><span style='cursor:help;' title='We require API version so that you do not experience unexpected changes when a new version is released.'>version</span></td>
+                                <td>Version of the API you're using</td>
+                                <td>An integer (e.g., 1)</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>key</td>
+                                <td>Your API key</td>
+                                <td>A string</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>user_id</td>
+                                <td>The requesting user's user ID.</td>
+                                <td>A string</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>auth_token</td>
+                                <td>Auth token of user's session.</td>
+                                <td>A string</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>lat</td>
+                                <td>Latitude of desired delivery location</td>
+                                <td>A number (e.g., -118.27367287)</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>lng</td>
+                                <td>Longitude of desired delivery location</td>
+                                <td>A number (e.g., 34.053892)</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="table-legend-right">
+                        <span style="color: #000;">Additional info upon mouse hover for some text.</span> Parameters in red are <span class="required">required</span>.
+                    </div>
+                    
+                    <p>
+                        Example POST request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-request-order'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
+                    </p>
+                    
+                    <div id="example-request-order" style="display: none;">
+                        POST Request:
+                        <br /><span style="color: black;">https://api.purpleapp.com/orders/request</span>
+                        <pre class="snippet" data-language="javascript"><code>{
+  "version": 1,
+  "key": "yekipa987654321",
+  "user_id": "G7yG674ftgebB987ncj8",
+  "auth_token": "Nmcbdhvid863hf7Gydh7hcudn3467678dufhBuxzke8734",
+  "lat": -118.27367287,
+  "lng": 34.053892
+}</code></pre>
+                        JSON Response:
+                        <pre class="snippet" data-language="javascript"><code>{
+  "success": true
+}</code></pre>
+                    </div>
+
+                    <br />
+                    <h2 class="content-subhead">
+                        <a name="get-orders" />
+                        Get Orders
+                    </h2>
+                    <p>
+                        To get a list of a user's past and current orders along with the details of each order.
+                    </p>
+
+                    <pre class="snippet" data-language="html"><code>[POST] https://api.purpleapp.com/orders/get</code></pre>
+
+                    <table class="pure-table pure-table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Description</th>
+                                <th>Values</th>
+                                <th>Default</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="required">
+                                <td><span style='cursor:help;' title='We require API version so that you do not experience unexpected changes when a new version is released.'>version</span></td>
+                                <td>Version of the API you're using</td>
+                                <td>An integer (e.g., 1)</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>key</td>
+                                <td>Your API key</td>
+                                <td>A string</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>user_id</td>
+                                <td>The requesting user's user ID.</td>
+                                <td>A string</td>
+                                <td></td>
+                            </tr>
+                            <tr class="required">
+                                <td>auth_token</td>
+                                <td>Auth token of user's session.</td>
+                                <td>A string</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>start</td>
+                                <td>Starting index (0-based). Use with 'limit' for pagination.</td>
+                                <td>An integer >= 0</td>
+                                <td>0</td>
+                            </tr>
+                            <tr>
+                                <td>limit</td>
+                                <td>How many orders to retrieve.</td>
+                                <td>An integer >= 0</td>
+                                <td>50</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="table-legend-right">
+                        <span style="color: #000;">Additional info upon mouse hover for some text.</span> Parameters in red are <span class="required">required</span>.
+                    </div>
+                    
+                    <p>
+                        Example POST request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-get-orders'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
+                    </p>
+                    
+                    <div id="example-get-orders" style="display: none;">
+                        POST Request:
+                        <br /><span style="color: black;">https://api.purpleapp.com/orders/get</span>
+                        <pre class="snippet" data-language="javascript"><code>{
+  "version": 1,
+  "key": "yekipa987654321",
+  "user_id": "G7yG674ftgebB987ncj8",
+  "auth_token": "Nmcbdhvid863hf7Gydh7hcudn3467678dufhBuxzke8734",
+  "lat": -118.27367287,
+  "lng": 34.053892
+}</code></pre>
+                        JSON Response:
+                        <pre class="snippet" data-language="javascript"><code>{
+  "success": true
+}</code></pre>
+                    </div>
+                    
+                </div>
+
+                <div class="legal pure-g-r">
+                    <div class="pure-u-2-5">
+                        <div class="l-box">
+                            
+                        </div>
+                    </div>
+
+                    <div class="pure-u-1-5">
+                        <div class="l-box legal-logo">
+                            <a href="">
+                                <img src="/apple-icon-72x72.png" width="65" height="65">
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="pure-u-2-5">
+                        <div class="l-box">
+                            <ul class="legal-links">
+                                <li><a href="http://purpleapp.com"">purpleapp.com</a></li>
+                            </ul>
+
+                            <p class="legal-copyright">
+                                &copy; 2016 Purple Services Inc. All rights reserved.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script>
+         var menu = document.getElementById('menu'),
+             menuLink = document.getElementById('menuLink'),
+             layout = document.getElementById('layout'),
+             toggleClass = function(element, className) {
+                 var classes = element.className.split(/\s+/),
+                     length = classes.length,
+                     i = 0;
+
+                 for (; i < length; i++) {
+                     if (classes[i] === className) {
+                         classes.splice(i, 1);
+                         break;
+                     }
+                 }
+                 // the className is not found
+                 if (length === classes.length) {
+                     classes.push(className);
+                 }
+
+                 element.className = classes.join(' ');
+             };
+
+         menuLink.onclick = function(e) {
+             e.preventDefault();
+             var active = 'active';
+             toggleClass(layout, active);
+             toggleClass(menu, active);
+             toggleClass(menuLink, active);
+         };
+        </script>
+
+        <script src="js/vendor/rainbow/rainbow-min.js"></script>
+
+    </body>
+</html>
+
