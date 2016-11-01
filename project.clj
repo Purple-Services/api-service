@@ -19,6 +19,7 @@
                  [org.clojure/data.priority-map "0.0.6"]
                  [ring-cors "0.1.7"]
                  [ring/ring-ssl "0.2.1"]
+                 [ring-basic-authentication "1.0.5"]
                  [org.clojure/algo.generic "0.1.2"]
                  [common "2.0.2-SNAPSHOT"]]
   :pedantic? false

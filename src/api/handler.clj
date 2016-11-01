@@ -15,6 +15,7 @@
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [header response redirect]]
             [ring.middleware.ssl :refer [wrap-ssl-redirect]]
+            [ring.middleware.basic-authentication :refer [wrap-basic-authentication]]
             [clojure.string :as s]))
 
 (defn wrap-page [resp]
@@ -34,6 +35,11 @@
      (do ~@body)
      {:success false
       :message "Something's wrong. Please log out and log back in."}))
+
+(defn basic-auth?
+  [api-key user-auth-token]
+  (do (println api-key user-auth-token)
+      true))
 
 (defroutes app-routes
   ;; (context "/orders" []
@@ -66,19 +72,25 @@
   ;;                               (:user_id b)
   ;;                               (:order_id b)))))))))
   
-  ;; (wrap-force-ssl
-  ;;  ;; Check availability options for given params (location, etc.)
-  ;;  (POST "/availability" {body :body}
-  ;;        (response
-  ;;         (let [b (keywordize-keys body)
-  ;;               db-conn (conn)]
-  ;;           (demand-user-auth
-  ;;            db-conn
-  ;;            (:user_id b)
-  ;;            (:token b)
-  ;;            (dispatch/availability db-conn
-  ;;                                   (:zip_code b)
-  ;;                                   (:user_id b)))))))
+  (wrap-force-ssl
+   (wrap-basic-authentication
+    ;; Check availability options for given params (location, etc.)
+    (GET "/availability" {body :body
+                          headers :headers}
+         (response
+          (let [b (keywordize-keys body)
+                _ (clojure.pprint/pprint headers)
+                db-conn (conn)]
+            {:success false}
+            ;; (demand-user-auth
+            ;;  db-conn
+            ;;  (:user_id b)
+            ;;  (:token b)
+            ;;  (dispatch/availability db-conn
+            ;;                         (:zip_code b)
+            ;;                         (:user_id b)))
+            )))
+    basic-auth?))
   
   
   (GET "/docs" [] (wrap-page (response (pages/docs))))

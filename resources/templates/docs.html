@@ -41,7 +41,8 @@
                 <div class="pure-menu pure-menu-open">
                     <a class="pure-menu-heading" href="/docs">Purple API</a>
                     <ul>
-                        <li class="pure-menu-selected">
+                        <!-- use class for active: pure-menu-selected -->
+                        <li class="">
                             <a href="#availability-check">Availability Check</a>
                         </li>
                         <li class="">
@@ -59,6 +60,9 @@
                 <div class="header">
                     <h1>Purple API Docs</h1>
                     <h2></h2>
+                    <p>
+                        
+                    </p>
                 </div>
 
                 <div class="content">
@@ -71,8 +75,37 @@
                         To find out the availabile options for delivery to a certain location. Requires an active user session.
                     </p>
 
-                    <pre class="snippet" data-language="html"><code>[POST] https://api.purpleapp.com/availability</code></pre>
+                    <pre class="snippet" data-language="html"><code>[GET] https://api.purpleapp.com/availability</code></pre>
 
+                    <table class="pure-table pure-table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Header</th>
+                                <th>Description</th>
+                                <th>Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="required">
+                                <td>Authorization</td>
+                                <td>Your API key + ":"</td>
+                                <td>Jkcndh3v7797389usdii39fuw:</td>
+                            </tr>
+                            <tr class="required">
+                                <td>User-Auth-Token</td>
+                                <td>Auth token of user's session.</td>
+                                <td>Jnch737hDff898eriux8uey37e9wu</td>
+                            </tr>
+                            <tr class="required">
+                                <td><span style='cursor:help;' title='We require API version so that you do not experience unexpected changes when a new version is released.'>Version</span></td>
+                                <td>Version of the API you're using</td>
+                                <td>1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <br />
+                    
                     <table class="pure-table pure-table-bordered">
                         <thead>
                             <tr>
@@ -83,30 +116,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="required">
-                                <td><span style='cursor:help;' title='We require API version so that you do not experience unexpected changes when a new version is released.'>version</span></td>
-                                <td>Version of the API you're using</td>
-                                <td>An integer (e.g., 1)</td>
-                                <td></td>
-                            </tr>
-                            <tr class="required">
-                                <td>key</td>
-                                <td>Your API key</td>
-                                <td>A string</td>
-                                <td></td>
-                            </tr>
-                            <tr class="required">
-                                <td>user_id</td>
-                                <td>The requesting user's user ID.</td>
-                                <td>A string</td>
-                                <td></td>
-                            </tr>
-                            <tr class="required">
-                                <td>auth_token</td>
-                                <td>Auth token of user's session.</td>
-                                <td>A string</td>
-                                <td></td>
-                            </tr>
                             <tr class="required">
                                 <td>lat</td>
                                 <td>Latitude of desired delivery location</td>
@@ -130,10 +139,10 @@
                     </p>
                     
                     <div id="example-availability-check" style="display: none;">
-                        POST Request:
+                        GET Request:
                         <br /><span style="color: black;">https://api.purpleapp.com/availability</span>
                         <pre class="snippet" data-language="javascript"><code>{
-  "version": 1,
+  "api_version": 1,
   "key": "yekipa987654321",
   "user_id": "G7yG674ftgebB987ncj8",
   "auth_token": "Nmcbdhvid863hf7Gydh7hcudn3467678dufhBuxzke8734",
@@ -142,7 +151,13 @@
 }</code></pre>
                         JSON Response:
                         <pre class="snippet" data-language="javascript"><code>{
-  "success": true
+  "success": true,
+gas price
+options.
+etc
+
+dont need user id maybe just auth_token
+
 }</code></pre>
                     </div>
 
