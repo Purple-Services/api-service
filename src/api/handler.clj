@@ -42,55 +42,66 @@
       true))
 
 (defroutes app-routes
-  ;; (context "/orders" []
-  ;;          (wrap-force-ssl
-  ;;           (defroutes orders-routes
-  ;;             (POST "/add" {body :body}
-  ;;                   (response
-  ;;                    (let [b (keywordize-keys body)
-  ;;                          db-conn (conn)]
-  ;;                      (demand-user-auth
-  ;;                       db-conn
-  ;;                       (:user_id b)
-  ;;                       (:token b)
-  ;;                       (orders/add db-conn
-  ;;                                   (:user_id b)
-  ;;                                   (:order b)
-  ;;                                   :bypass-zip-code-check
-  ;;                                   (ver< (or (:version b) "0")
-  ;;                                         "1.2.2"))))))
-  ;;             ;; Customer tries to cancel order
-  ;;             (POST "/cancel" {body :body}
-  ;;                   (response
-  ;;                    (let [b (keywordize-keys body)
-  ;;                          db-conn (conn)]
-  ;;                      (demand-user-auth
-  ;;                       db-conn
-  ;;                       (:user_id b)
-  ;;                       (:token b)
-  ;;                       (cancel db-conn
-  ;;                               (:user_id b)
-  ;;                               (:order_id b)))))))))
+  (context "/orders" []
+           (wrap-force-ssl
+            (defroutes orders-routes
+              (POST "/request" {body :body}
+                    (response
+                     (let [b (keywordize-keys body)
+                           db-conn (conn)]
+                       {:success false
+                        :message "This feature is not yet implemented."}
+                       ;; (demand-user-auth
+                       ;;  db-conn
+                       ;;  (:user_id b)
+                       ;;  (:token b)
+                       ;;  (orders/add db-conn
+                       ;;              (:user_id b)
+                       ;;              (:order b)
+                       ;;              :bypass-zip-code-check
+                       ;;              (ver< (or (:version b) "0")
+                       ;;                    "1.2.2")))
+                       )))
+              ;; Customer tries to cancel order
+              (GET "/get" {body :body}
+                   (response
+                    (let [b (keywordize-keys body)
+                          db-conn (conn)]
+                      {:success false
+                       :message "This feature is not yet implemented."}
+                      ;; (demand-user-auth
+                      ;;  db-conn
+                      ;;  (:user_id b)
+                      ;;  (:token b)
+                      ;;  (cancel db-conn
+                      ;;          (:user_id b)
+                      ;;          (:order_id b)))
+                      ))))))
+
+
   
   (wrap-force-ssl
-   (wrap-basic-authentication
-    ;; Check availability options for given params (location, etc.)
-    (GET "/availability" {body :body
-                          headers :headers}
-         (response
-          (let [b (keywordize-keys body)
-                _ (clojure.pprint/pprint headers)
-                db-conn (conn)]
-            {:success false}
-            ;; (demand-user-auth
-            ;;  db-conn
-            ;;  (:user_id b)
-            ;;  (:token b)
-            ;;  (dispatch/availability db-conn
-            ;;                         (:zip_code b)
-            ;;                         (:user_id b)))
-            )))
-    basic-auth?))
+   ;; (wrap-basic-authentication
+   ;; Check availability options for given params (location, etc.)
+   (GET "/availability" {body :body
+                         headers :headers}
+        (response
+         (let [b (keywordize-keys body)
+               _ (clojure.pprint/pprint headers)
+               db-conn (conn)]
+           {:success false
+            :message "This feature is not yet implemented."}
+           ;; (demand-user-auth
+           ;;  db-conn
+           ;;  (:user_id b)
+           ;;  (:token b)
+           ;;  (dispatch/availability db-conn
+           ;;                         (:zip_code b)
+           ;;                         (:user_id b)))
+           )))
+   ;; basic-auth?
+   ;; )
+   )
   
   
   (GET "/docs" [] (wrap-page (response (pages/docs))))
