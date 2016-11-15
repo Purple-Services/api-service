@@ -7,6 +7,8 @@
             [common.orders :refer [cancel]]
             [common.users :refer [details send-feedback valid-session?]]
             [api.pages :as pages]
+            [api.auth :as auth]
+            [api.dispatch :as dispatch]
             [clojure.walk :refer [keywordize-keys]]
             [compojure.core :refer :all]
             [compojure.handler :as handler]
@@ -15,7 +17,6 @@
             [ring.middleware.json :as middleware]
             [ring.util.response :refer [header response redirect]]
             [ring.middleware.ssl :refer [wrap-ssl-redirect]]
-            [ring.middleware.basic-authentication :refer [wrap-basic-authentication]]
             [clojure.string :as s]))
 
 (defn wrap-page [resp]
@@ -29,79 +30,59 @@
     (wrap-ssl-redirect resp)
     resp))
 
-(defmacro demand-user-auth
-  [db-conn user-id token & body]
-  `(if (valid-session? ~db-conn ~user-id ~token)
-     (do ~@body)
-     {:success false
-      :message "Something's wrong. Please log out and log back in."}))
-
-(defn basic-auth?
-  [api-key user-auth-token]
-  (do (println api-key user-auth-token)
-      true))
-
 (defroutes app-routes
-  (context "/orders" []
-           (wrap-force-ssl
-            (defroutes orders-routes
-              (POST "/request" {body :body}
-                    (response
-                     (let [b (keywordize-keys body)
-                           db-conn (conn)]
-                       {:success false
-                        :message "This feature is not yet implemented."}
-                       ;; (demand-user-auth
-                       ;;  db-conn
-                       ;;  (:user_id b)
-                       ;;  (:token b)
-                       ;;  (orders/add db-conn
-                       ;;              (:user_id b)
-                       ;;              (:order b)
-                       ;;              :bypass-zip-code-check
-                       ;;              (ver< (or (:version b) "0")
-                       ;;                    "1.2.2")))
-                       )))
-              ;; Customer tries to cancel order
-              (GET "/get" {body :body}
-                   (response
-                    (let [b (keywordize-keys body)
-                          db-conn (conn)]
-                      {:success false
-                       :message "This feature is not yet implemented."}
-                      ;; (demand-user-auth
-                      ;;  db-conn
-                      ;;  (:user_id b)
-                      ;;  (:token b)
-                      ;;  (cancel db-conn
-                      ;;          (:user_id b)
-                      ;;          (:order_id b)))
-                      ))))))
+  (context "/v1" []
+           (context "/orders" []
+                    (defroutes orders-routes
+                      (POST "/request" {body :body}
+                            (response
+                             (let [b (keywordize-keys body)
+                                   db-conn (conn)]
+                               {:success false
+                                :message "This feature is not yet implemented."}
+                               ;; (demand-user-auth
+                               ;;  db-conn
+                               ;;  (:user_id b)
+                               ;;  (:token b)
+                               ;;  (orders/add db-conn
+                               ;;              (:user_id b)
+                               ;;              (:order b)
+                               ;;              :bypass-zip-code-check
+                               ;;              (ver< (or (:version b) "0")
+                               ;;                    "1.2.2")))
+                               )))
+                      ;; Customer tries to cancel order
+                      (GET "/get" {body :body}
+                           (response
+                            (let [b (keywordize-keys body)
+                                  db-conn (conn)]
+                              {:success false
+                               :message "This feature is not yet implemented."}
+                              ;; (demand-user-auth
+                              ;;  db-conn
+                              ;;  (:user_id b)
+                              ;;  (:token b)
+                              ;;  (cancel db-conn
+                              ;;          (:user_id b)
+                              ;;          (:order_id b)))
+                              )))))
+           (GET "/availability" {body :body
+                                 headers :headers}
+                (response
+                 (let [b (keywordize-keys body)
+                       [api-key user-auth-token] (auth/get-user-and-pass headers)
+                       db-conn (conn)]
+                   (if (auth/valid-api-key? api-key)
+                     (if-let [user-id (auth/user-auth-token->user-id
+                                       user-auth-token)]
+                       (dispatch/availability db-conn
+                                              user-id
+                                              (:lat b)
+                                              (:lng b)
+                                              (:vehicle_id b))
+                       {:message "Invalid User Auth Token."})
+                     {:message "Invalid API Key."})))))
 
-
-  
-  (wrap-force-ssl
-   ;; (wrap-basic-authentication
-   ;; Check availability options for given params (location, etc.)
-   (GET "/availability" {body :body
-                         headers :headers}
-        (response
-         (let [b (keywordize-keys body)
-               _ (clojure.pprint/pprint headers)
-               db-conn (conn)]
-           {:success false
-            :message "This feature is not yet implemented."}
-           ;; (demand-user-auth
-           ;;  db-conn
-           ;;  (:user_id b)
-           ;;  (:token b)
-           ;;  (dispatch/availability db-conn
-           ;;                         (:zip_code b)
-           ;;                         (:user_id b)))
-           )))
-   ;; basic-auth?
-   ;; )
-   )
   
   
   (GET "/docs" [] (wrap-page (response (pages/docs))))
@@ -112,6 +93,7 @@
 
 (def app
   (-> (handler/site app-routes)
+      (wrap-force-ssl)
       (wrap-cors :access-control-allow-origin [#".*"]
                  :access-control-allow-methods [:get :put :post :delete])
       (middleware/wrap-json-body)
