@@ -11,7 +11,8 @@
             [common.users :as users]
             [common.zones :refer [get-zip-def is-open-now? order->zones]]
             [common.subscriptions :as subscriptions]
-            [clojure.string :as s]))
+            [clojure.string :as s]
+            [clj-http.client :as client]))
 
 (defn delivery-time-map
   "Build a map that describes a delivery time option for the mobile app."
@@ -25,14 +26,14 @@
     (if (not (nil? num-free)) ;; using a subscription?
       (let [num-free-left (- num-free num-free-used)]
         (if (pos? num-free-left)
-          {:service_fee 0 ; the mobile app calls delivery fee "service_fee"
+          {:fee 0
            :text (gen-text (if (< num-free-left 1000)
                              (str num-free-left " left")
                              (fee-str 0)))}
           (let [after-discount (max 0 (+ delivery-fee sub-discount))]
-            {:service_fee after-discount
+            {:fee after-discount
              :text (gen-text (fee-str after-discount))})))
-      {:service_fee delivery-fee
+      {:fee delivery-fee
        :text (gen-text (fee-str delivery-fee))})))
 
 (defn delivery-times-map
@@ -46,65 +47,54 @@
                       (and (= 180 (val %))
                            ;; hide 3-hour option if using 1-hour sub
                            (or has-free-one-hour?)))
-                 ;; (:time-choices zip-def) ; still show all three options always
-                 ;; temporarily hardcoding this in
-                 {:0 60
-                  :1 180
-                  :2 300})
+                 (:time-choices zip-def))
          (#(for [[k v] %
                  :let [[num-as-word time-str]
                        (case v
                          300 ["five" "within 5 hours"]
                          180 ["three" "within 3 hours"]
                          60  ["one" "within 1 hour"])]]
-             [v (assoc (delivery-time-map time-str
-                                          (get delivery-fees v)
-                                          (((comp keyword str)
-                                            "num_free_" num-as-word "_hour") sub)
-                                          (((comp keyword str)
-                                            "num_free_" num-as-word "_hour_used") sub)
-                                          (((comp keyword str)
-                                            "discount_" num-as-word "_hour") sub))
-                       :order (Integer. (name k)))]))
-         (into {}))))
+             (assoc (delivery-time-map time-str
+                                       (get delivery-fees v)
+                                       (((comp keyword str)
+                                         "num_free_" num-as-word "_hour") sub)
+                                       (((comp keyword str)
+                                         "num_free_" num-as-word "_hour_used") sub)
+                                       (((comp keyword str)
+                                         "discount_" num-as-word "_hour") sub))
+                    :time v))))))
 
 (defn available
   [user zip-def subscription octane]
-  {:octane octane
-   :gallon_choices
-   (cond
-     (users/is-managed-account? user) [7.5 10 15 20 25 30]
-     (in? [1 2] (:id subscription)) [7.5 10 15 20]
-     :else (vals (:gallon-choices zip-def)))
-   :price_per_gallon (get (:gas-price zip-def) octane)
-   :times (->> (:delivery-fee zip-def)
-               (delivery-times-map user zip-def subscription)
-               (into {}))
+  {:time_choices (delivery-times-map user zip-def subscription (:delivery-fee zip-def))
+   :gallon_choices (vals (:gallon-choices zip-def))
+   :octane octane
+   :gas_price (get (:gas-price zip-def) octane)
    :tire_pressure_check_price (:tire-pressure-price zip-def)})
-
-(defn availabilities-map
-  [db-conn zip-code user subscription]
-  (if-let [zip-def (get-zip-def db-conn zip-code)]
-    (if (is-open-now? zip-def)
-      {:success true
-       ;; todo - get vehicle octane
-       :availabilities (available user zip-def subscription "87")}
-      {:success true
-       :availabilities []
-       :unavailable-reason (:closed-message zip-def)})
-    ;; We don't service this ZIP code at all.
-    {:success true
-     :availabilities []
-     :unavailable-reason
-     (str "Sorry, we are unable to deliver gas to your "
-          "location. We are rapidly expanding our service "
-          "area and hope to offer service to your "
-          "location very soon.")}))
 
 (defn latlng->zip
   "Get 5-digit ZIP given lat lng."
   [lat lng]
-  "90025")
+  (try
+    (let [resp (:body (clj-http.client/get
+                       "https://maps.googleapis.com/maps/api/geocode/json"
+                       {:as :json
+                        :content-type :json
+                        :coerce :always
+                        :query-params {:latlng (str lat "," lng)
+                                       ;; todo use env var
+                                       :key "AIzaSyAXQtxXwmClUqbEw8mDjOHsufHVw7G0Sbs"}}))]
+      (if (= "OK" (:status resp))
+        (->> resp
+             :results
+             (filter #(in? (:types %) "postal_code"))
+             first
+             :address_components
+             (filter #(in? (:types %) "postal_code"))
+             first
+             :short_name)
+        nil))
+    (catch Exception e nil)))
 
 (defn availability
   "Get an availability map to tell client what orders it can offer to user."
@@ -112,7 +102,22 @@
   (let [user (users/get-user-by-id db-conn user-id)
         subscription (when (subscriptions/valid? user)
                        (subscriptions/get-with-usage db-conn user))
+        vehicle (first (!select db-conn "vehicles" ["gas_type"] {:id vehicle-id}))
         zip-code (latlng->zip lat lng)]
-    (merge {:success true}
-           ;; this will give us :availabilities & :unavailable-reason
-           (availabilities-map db-conn zip-code user subscription))))
+    (if vehicle
+      (if-let [zip-def (when zip-code (get-zip-def db-conn zip-code))]
+        (if (is-open-now? zip-def)
+          {:success true
+           ;; todo - get vehicle octane
+           :availability (available user zip-def subscription (:gas_type vehicle))}
+          {:success false
+           :message (:closed-message zip-def)})
+        ;; We don't service this ZIP code at all.
+        {:success false
+         :message
+         (str "Sorry, we are unable to deliver gas to your "
+              "location. We are rapidly expanding our service "
+              "area and hope to offer service to your "
+              "location very soon.")})
+      {:success false
+       :message "Sorry, we don't recognize your vehicle information."})))

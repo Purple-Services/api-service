@@ -66,7 +66,7 @@
                               ;;          (:user_id b)
                               ;;          (:order_id b)))
                               )))))
-           (GET "/availability" {body :body
+           (GET "/availability" {body :params
                                  headers :headers}
                 (response
                  (let [b (keywordize-keys body)
@@ -80,8 +80,10 @@
                                               (:lat b)
                                               (:lng b)
                                               (:vehicle_id b))
-                       {:message "Invalid User Auth Token."})
-                     {:message "Invalid API Key."})))))
+                       {:success false
+                        :message "Invalid User Auth Token."})
+                     {:success false
+                      :message "Invalid API Key."})))))
 
   
   
