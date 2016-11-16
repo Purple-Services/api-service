@@ -33,8 +33,27 @@
 (defroutes app-routes
   (context "/v1" []
            (context "/orders" []
-                    (defroutes orders-routes
-                      (POST "/request" {body :body}
+                    (wrap-force-ssl
+                     (defroutes orders-routes
+                       (POST "/request" {body :body}
+                             (response
+                              (let [b (keywordize-keys body)
+                                    db-conn (conn)]
+                                {:success false
+                                 :message "This feature is not yet implemented."}
+                                ;; (demand-user-auth
+                                ;;  db-conn
+                                ;;  (:user_id b)
+                                ;;  (:token b)
+                                ;;  (orders/add db-conn
+                                ;;              (:user_id b)
+                                ;;              (:order b)
+                                ;;              :bypass-zip-code-check
+                                ;;              (ver< (or (:version b) "0")
+                                ;;                    "1.2.2")))
+                                )))
+                       ;; Customer tries to cancel order
+                       (GET "/get" {body :body}
                             (response
                              (let [b (keywordize-keys body)
                                    db-conn (conn)]
@@ -44,28 +63,10 @@
                                ;;  db-conn
                                ;;  (:user_id b)
                                ;;  (:token b)
-                               ;;  (orders/add db-conn
-                               ;;              (:user_id b)
-                               ;;              (:order b)
-                               ;;              :bypass-zip-code-check
-                               ;;              (ver< (or (:version b) "0")
-                               ;;                    "1.2.2")))
-                               )))
-                      ;; Customer tries to cancel order
-                      (GET "/get" {body :body}
-                           (response
-                            (let [b (keywordize-keys body)
-                                  db-conn (conn)]
-                              {:success false
-                               :message "This feature is not yet implemented."}
-                              ;; (demand-user-auth
-                              ;;  db-conn
-                              ;;  (:user_id b)
-                              ;;  (:token b)
-                              ;;  (cancel db-conn
-                              ;;          (:user_id b)
-                              ;;          (:order_id b)))
-                              )))))
+                               ;;  (cancel db-conn
+                               ;;          (:user_id b)
+                               ;;          (:order_id b)))
+                               ))))))
            (wrap-force-ssl
             (defroutes availability-routes
               (GET "/availability" {body :params
