@@ -128,30 +128,37 @@
                         Keys in red are <span class="required">required</span>.
                     </div>
                     
-                    <p style="display:none">
-                        Example POST request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-availability-check'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
+                    <p>
+                        Example GET request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-availability-check'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
                     </p>
                     
                     <div id="example-availability-check" style="display: none;">
-                        GET Request:
-                        <br /><span style="color: black;">https://api.purpleapp.com/v1/availability</span>
-                        <pre class="snippet" data-language="javascript"><code>{
-  "api_version": 1,
-  "key": "yekipa987654321",
-  "user_id": "G7yG674ftgebB987ncj8",
-  "auth_token": "Nmcbdhvid863hf7Gydh7hcudn3467678dufhBuxzke8734",
-  "lat": -118.27367287,
-  "lng": 34.053892
-}</code></pre>
+                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET 'https://api.purpleapp.com/v1/availability?lat=34.031464&lng=-118.491809&vehicle_id=4clhMV0ewUMDB7O4460R' -u 123APIKEY:456USERAUTHKEY</code></pre>
                         JSON Response:
-                        <pre class="snippet" data-language="javascript"><code>{
-  "success": true,
-gas price
-options.
-etc
-
-dont need user id maybe just auth_token
-
+                        <pre class="snippet" data-language="json"><code>{
+   "success":true,
+   "availability":{
+      "time_choices":[
+         {
+            "fee":599,
+            "text":"within 1 hour ($5.99)",
+            "time":60
+         },
+         {
+            "fee":0,
+            "text":"within 3 hours (3 left)",
+            "time":180
+         }
+      ],
+      "gallon_choices":[
+         7.5,
+         10,
+         15
+      ],
+      "octane":"91",
+      "gas_price":339,
+      "tire_pressure_check_price":700
+   }
 }</code></pre>
                     </div>
 

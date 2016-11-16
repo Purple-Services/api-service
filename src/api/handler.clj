@@ -66,27 +66,26 @@
                               ;;          (:user_id b)
                               ;;          (:order_id b)))
                               )))))
-           (GET "/availability" {body :params
-                                 headers :headers}
-                (response
-                 (let [b (keywordize-keys body)
-                       [api-key user-auth-token] (auth/get-user-and-pass headers)
-                       db-conn (conn)]
-                   (if (auth/valid-api-key? api-key)
-                     (if-let [user-id (auth/user-auth-token->user-id
-                                       user-auth-token)]
-                       (dispatch/availability db-conn
-                                              user-id
-                                              (:lat b)
-                                              (:lng b)
-                                              (:vehicle_id b))
-                       {:success false
-                        :message "Invalid User Auth Token."})
-                     {:success false
-                      :message "Invalid API Key."})))))
-
-  
-  
+           (wrap-force-ssl
+            (defroutes availability-routes
+              (GET "/availability" {body :params
+                                    headers :headers}
+                   (response
+                    (let [b (keywordize-keys body)
+                          [api-key user-auth-token] (auth/get-user-and-pass headers)
+                          db-conn (conn)]
+                      (if (auth/valid-api-key? api-key)
+                        (if-let [user-id (auth/user-auth-token->user-id
+                                          user-auth-token)]
+                          (dispatch/availability db-conn
+                                                 user-id
+                                                 (:lat b)
+                                                 (:lng b)
+                                                 (:vehicle_id b))
+                          {:success false
+                           :message "Invalid User Auth Token."})
+                        {:success false
+                         :message "Invalid API Key."})))))))
   (GET "/docs" [] (wrap-page (response (pages/docs))))
   (GET "/ok" [] (response {:success true}))
   (GET "/" [] (redirect "/docs"))
@@ -95,7 +94,6 @@
 
 (def app
   (-> (handler/site app-routes)
-      (wrap-force-ssl)
       (wrap-cors :access-control-allow-origin [#".*"]
                  :access-control-allow-methods [:get :put :post :delete])
       (middleware/wrap-json-body)

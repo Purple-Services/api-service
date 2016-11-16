@@ -67,7 +67,8 @@
 (defn available
   [user zip-def subscription octane]
   {:time_choices (delivery-times-map user zip-def subscription (:delivery-fee zip-def))
-   :gallon_choices (vals (:gallon-choices zip-def))
+   :gallon_choices (conj (vals (:gallon-choices zip-def))
+                         "fill")
    :octane octane
    :gas_price (get (:gas-price zip-def) octane)
    :tire_pressure_check_price (:tire-pressure-price zip-def)})
@@ -114,10 +115,9 @@
            :message (:closed-message zip-def)})
         ;; We don't service this ZIP code at all.
         {:success false
-         :message
-         (str "Sorry, we are unable to deliver gas to your "
-              "location. We are rapidly expanding our service "
-              "area and hope to offer service to your "
-              "location very soon.")})
+         :message (str "Sorry, we are unable to deliver gas to your "
+                       "location. We are rapidly expanding our service "
+                       "area and hope to offer service to your "
+                       "location very soon.")})
       {:success false
        :message "Sorry, we don't recognize your vehicle information."})))
