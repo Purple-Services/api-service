@@ -69,14 +69,14 @@
                                ))))))
            (wrap-force-ssl
             (defroutes availability-routes
-              (GET "/availability" {body :params
-                                    headers :headers}
+              (GET "/availability" {body :params headers :headers}
                    (response
                     (let [b (keywordize-keys body)
                           [api-key user-auth-token] (auth/get-user-and-pass headers)
                           db-conn (conn)]
-                      (if (auth/valid-api-key? api-key)
+                      (if (auth/valid-api-key? db-conn api-key)
                         (if-let [user-id (auth/user-auth-token->user-id
+                                          db-conn
                                           user-auth-token)]
                           (dispatch/availability db-conn
                                                  user-id

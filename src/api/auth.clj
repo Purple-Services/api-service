@@ -1,5 +1,6 @@
 (ns api.auth
-  (:require [common.config :as config]
+  (:require [common.db :refer [conn !select !insert !update]]
+            [common.config :as config]
             [clojure.string :as s]
             [clojure.data.codec.base64 :as base64]))
 
@@ -31,11 +32,22 @@
     [user pass]))
 
 (defn valid-api-key?
-  [api-key]
+  [db-conn api-key]
   (when-not (s/blank? api-key)
-    true))
+    (seq (!select db-conn
+                  "api_keys"
+                  [:id]
+                  {:api_key api-key
+                   :active 1}))))
 
 (defn user-auth-token->user-id
-  [user-auth-token]
+  [db-conn user-auth-token]
   (when-not (s/blank? user-auth-token)
-    "z5kZavElDQPcmlYzxYLr"))
+    (some-> (!select db-conn
+                     "sessions"
+                     [:user_id]
+                     {:token user-auth-token
+                      :source "api"
+                      :active 1})
+            first
+            :user_id)))
