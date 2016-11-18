@@ -1,6 +1,5 @@
 (ns api.auth
   (:require [common.db :refer [conn !select !insert !update]]
-            [common.config :as config]
             [clojure.string :as s]
             [clojure.data.codec.base64 :as base64]))
 

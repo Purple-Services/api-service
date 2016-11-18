@@ -33,15 +33,15 @@
                              (mock/header "Authorization" "Basic S0pQVzFiR25kRExFV1d1NUxwNUtKQWpndk1LS1NiSkE6c3FYd1RpaFZnVG9YMENkeTY1OW1DVksxZ1B6RjBBMThFR0VwSnRZbEdLQVVOa2dPR09zMnU3dE5UcUk2TGx0Q1VVWWhFdWJjdVQ1SWxQOFF0VFdLT0FLRkVYbTlWYlhWS1lWUmJoeTlTaWk5N3FqS2tsZ2JEa0NZMHY0UXF0Zk4=")
                              (mock/content-type "application/json")))
           body (parse-string (:body response) true)]
-      (= {:success true,
-          :availability
-          {:time_choices
-           [{:fee 599, :text "within 1 hour ($5.99)", :time 60}
-            {:fee 399, :text "within 3 hours ($3.99)", :time 180}
-            {:fee 299, :text "within 5 hours ($2.99)", :time 300}],
-           :gallon_choices [7.5 10 15],
-           :octane "87",
-           :gas_price 312,
-           :tire_pressure_check_price 700}}
-         body))))
+      (is (= {:success true,
+              :availability
+              {:time_choices
+               [{:fee 599, :text "within 1 hour ($5.99)", :time 60}
+                {:fee 399, :text "within 3 hours ($3.99)", :time 180}
+                {:fee 299, :text "within 5 hours ($2.99)", :time 300}],
+               :gallon_choices ["fill" 7.5 10 15],
+               :octane "91",
+               :gas_price 339,
+               :tire_pressure_check_price 700}}
+             body)))))
 

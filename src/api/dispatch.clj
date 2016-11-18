@@ -1,6 +1,5 @@
 (ns api.dispatch
   (:require [common.db :refer [conn !select !insert !update]]
-            [common.config :as config]
             [common.util :refer [cents->dollars-str in? catch-notify
                                  latlng->zip]]
             [common.users :as users]

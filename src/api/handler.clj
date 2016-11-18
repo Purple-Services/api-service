@@ -30,63 +30,61 @@
     (wrap-ssl-redirect resp)
     resp))
 
+(defn with-auth
+  [db-conn req f]
+  (let [[api-key user-auth-token] (auth/get-user-and-pass (:headers req))]
+    (if (auth/valid-api-key? db-conn api-key)
+      (if-let [user-id (auth/user-auth-token->user-id db-conn user-auth-token)]
+        (f user-id)
+        {:success false
+         :message "Invalid User Auth Token."})
+      {:success false
+       :message "Invalid API Key."})))
+
 (defroutes app-routes
   (context "/v1" []
            (context "/orders" []
                     (wrap-force-ssl
                      (defroutes orders-routes
-                       (POST "/request" {body :body}
+                       (POST "/request" req
                              (response
-                              (let [b (keywordize-keys body)
+                              (let [params (keywordize-keys (:body req))
                                     db-conn (conn)]
-                                {:success false
-                                 :message "This feature is not yet implemented."}
-                                ;; (demand-user-auth
-                                ;;  db-conn
-                                ;;  (:user_id b)
-                                ;;  (:token b)
-                                ;;  (orders/add db-conn
-                                ;;              (:user_id b)
-                                ;;              (:order b)
-                                ;;              :bypass-zip-code-check
-                                ;;              (ver< (or (:version b) "0")
-                                ;;                    "1.2.2")))
-                                )))
+                                (with-auth db-conn req
+                                  {:success false
+                                   :message "This feature is not yet implemented."}
+                                  ;;  (orders/add db-conn
+                                  ;;              (:user_id b)
+                                  ;;              (:order b)
+                                  ;;              :bypass-zip-code-check
+                                  ;;              (ver< (or (:version b) "0")
+                                  ;;                    "1.2.2"))
+                                  ))))
                        ;; Customer tries to cancel order
-                       (GET "/get" {body :body}
+                       (GET "/get" req
                             (response
-                             (let [b (keywordize-keys body)
+                             (let [params (keywordize-keys (:body req))
                                    db-conn (conn)]
-                               {:success false
-                                :message "This feature is not yet implemented."}
-                               ;; (demand-user-auth
-                               ;;  db-conn
-                               ;;  (:user_id b)
-                               ;;  (:token b)
-                               ;;  (cancel db-conn
-                               ;;          (:user_id b)
-                               ;;          (:order_id b)))
-                               ))))))
+                               (with-auth db-conn req
+                                 {:success false
+                                  :message "This feature is not yet implemented."}
+                                 ;;  (cancel db-conn
+                                 ;;          (:user_id b)
+                                 ;;          (:order_id b))
+                                 )))))))
            (wrap-force-ssl
             (defroutes availability-routes
-              (GET "/availability" {body :params headers :headers}
+              (GET "/availability" req
                    (response
-                    (let [b (keywordize-keys body)
-                          [api-key user-auth-token] (auth/get-user-and-pass headers)
+                    (let [params (keywordize-keys (:params req))
                           db-conn (conn)]
-                      (if (auth/valid-api-key? db-conn api-key)
-                        (if-let [user-id (auth/user-auth-token->user-id
-                                          db-conn
-                                          user-auth-token)]
+                      (with-auth db-conn req
+                        (fn [user-id]
                           (dispatch/availability db-conn
                                                  user-id
-                                                 (:lat b)
-                                                 (:lng b)
-                                                 (:vehicle_id b))
-                          {:success false
-                           :message "Invalid User Auth Token."})
-                        {:success false
-                         :message "Invalid API Key."})))))))
+                                                 (:lat params)
+                                                 (:lng params)
+                                                 (:vehicle_id params))))))))))
   (GET "/docs" [] (wrap-page (response (pages/docs))))
   (GET "/ok" [] (response {:success true}))
   (GET "/" [] (redirect "/docs"))
