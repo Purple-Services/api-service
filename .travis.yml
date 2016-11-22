@@ -1,5 +1,6 @@
 language: clojure
 before_install:
+  - export TZ=UTC
   - cd ../
   - git clone git@github.com:Purple-Services/common.git
   - cd common
@@ -11,6 +12,7 @@ before_install:
   - mysql -e "create database if not exists ebdb;" -uroot
   - mysql -e "create database if not exists ebdb_test;" -uroot
 script:
+  - date
   - lein exec -p scripts/setupdb.clj root_password=
   - lein test
 notifications:
