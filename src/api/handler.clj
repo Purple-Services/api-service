@@ -1,6 +1,6 @@
 (ns api.handler
-  (:require [common.util :refer [! unless-p ver< coerce-double
-                                 log-error only-prod-or-dev]]
+  (:require [common.util :refer [! unless-p ver< coerce-double log-error
+                                 only-prod-or-dev rand-str-alpha-num]]
             [common.db :refer [conn]]
             [common.config :as config]
             [common.coupons :refer [format-coupon-code]]
@@ -9,6 +9,7 @@
             [api.pages :as pages]
             [api.auth :as auth]
             [api.dispatch :as dispatch]
+            [api.orders :as orders]
             [clojure.walk :refer [keywordize-keys]]
             [compojure.core :refer :all]
             [compojure.handler :as handler]
@@ -51,27 +52,38 @@
                               (let [params (keywordize-keys (:body req))
                                     db-conn (conn)]
                                 (with-auth db-conn req
-                                  {:success false
-                                   :message "This feature is not yet implemented."}
-                                  ;;  (orders/add db-conn
-                                  ;;              (:user_id b)
-                                  ;;              (:order b)
-                                  ;;              :bypass-zip-code-check
-                                  ;;              (ver< (or (:version b) "0")
-                                  ;;                    "1.2.2"))
-                                  ))))
-                       ;; Customer tries to cancel order
+                                  (fn [user-id]
+                                    (orders/request
+                                     db-conn
+                                     user-id
+                                     (:lat params)
+                                     (:lng params)
+                                     (:vehicle_id params)
+                                     (Integer. (:time_limit params))
+                                     (if (= "fillup" (:gallons params))
+                                       (:gallons params)
+                                       (Integer. (:gallons params)))
+                                     (Integer. (:gas_price params))
+                                     (Integer. (:delivery_fee params))
+                                     (:special_instructions params)))))))
                        (GET "/get" req
                             (response
-                             (let [params (keywordize-keys (:body req))
+                             (let [params (keywordize-keys (:params req))
                                    db-conn (conn)]
                                (with-auth db-conn req
-                                 {:success false
-                                  :message "This feature is not yet implemented."}
-                                 ;;  (cancel db-conn
-                                 ;;          (:user_id b)
-                                 ;;          (:order_id b))
-                                 )))))))
+                                 (fn [user-id]
+                                   (orders/get-by-user
+                                    db-conn
+                                    user-id
+                                    (if (= "asc" (:sort params))
+                                      "asc"
+                                      "desc")
+                                    (if (s/blank? (:start params))
+                                      0
+                                      (Integer. (:start params)))
+                                    (if (s/blank? (:limit params))
+                                      50
+                                      (Integer. (:limit params))))))))))))
            (wrap-force-ssl
             (defroutes availability-routes
               (GET "/availability" req
@@ -85,6 +97,9 @@
                                                  (:lat params)
                                                  (:lng params)
                                                  (:vehicle_id params))))))))))
+  ;; just a helpful utility
+  (GET "/gen-id" [] (response {:success true
+                               :id (rand-str-alpha-num 20)}))
   (GET "/docs" [] (wrap-page (response (pages/docs))))
   (GET "/ok" [] (response {:success true}))
   (GET "/" [] (redirect "/docs"))

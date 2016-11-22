@@ -1,7 +1,7 @@
 (ns api.dispatch
   (:require [common.db :refer [conn !select !insert !update]]
             [common.util :refer [cents->dollars-str in? catch-notify
-                                 latlng->zip]]
+                                 reverse-geocode]]
             [common.users :as users]
             [common.zones :refer [get-zip-def is-open-now? order->zones]]
             [common.subscriptions :as subscriptions]
@@ -68,7 +68,7 @@
    :gallon_choices (conj (vals (:gallon-choices zip-def)) "fill")
    :octane octane
    :gas_price (get (:gas-price zip-def) octane)
-   :tire_pressure_check_price (:tire-pressure-price zip-def)})
+   :tire_pressure_fillup_price (:tire-pressure-price zip-def)})
 
 (defn availability
   "Get an availability map to tell client what orders it can offer to user."
@@ -77,7 +77,7 @@
         subscription (when (subscriptions/valid? user)
                        (subscriptions/get-with-usage db-conn user))
         vehicle (first (!select db-conn "vehicles" ["gas_type"] {:id vehicle-id}))
-        zip-code (latlng->zip lat lng)]
+        zip-code (:zip (reverse-geocode lat lng))]
     (if vehicle
       (if-let [zip-def (when zip-code (get-zip-def db-conn zip-code))]
         (if (is-open-now? zip-def)
