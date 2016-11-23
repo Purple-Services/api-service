@@ -75,6 +75,7 @@
                                    (orders/get-by-user
                                     db-conn
                                     user-id
+                                    (:vehicle_id params)
                                     (if (= "asc" (:sort params))
                                       "asc"
                                       "desc")

@@ -49,8 +49,7 @@
     (let [params {:limit 3
                   :start 5
                   :sort "desc"
-                  ;; :vehicle_id "KmHDbvxQYKjcCX7EPJzM"
-                  } ;; todo enforce vehicle restriciton
+                  :vehicle_id "KmHDbvxQYKjcCX7EPJzM"}
           response (app (->  (mock/request :get "/v1/orders/get")
                              (mock/query-string params)
                              (mock/header "Authorization" "Basic S0pQVzFiR25kRExFV1d1NUxwNUtKQWpndk1LS1NiSkE6c3FYd1RpaFZnVG9YMENkeTY1OW1DVksxZ1B6RjBBMThFR0VwSnRZbEdLQVVOa2dPR09zMnU3dE5UcUk2TGx0Q1VVWWhFdWJjdVQ1SWxQOFF0VFdLT0FLRkVYbTlWYlhWS1lWUmJoeTlTaWk5N3FqS2tsZ2JEa0NZMHY0UXF0Zk4=")
@@ -74,7 +73,7 @@
                         :address_street "Bayside Walk Pacific Beach"
                         :license_plate "VVHH"
                         :lng -117.23440447031247
-                        :timestamp_created "2016-10-17T20:53:44Z"}
+                        :timestamp_created 1476737624}
                        {:tire_pressure_fillup false
                         :vehicle_id "KmHDbvxQYKjcCX7EPJzM"
                         :total_price 2650
@@ -92,7 +91,7 @@
                         :address_street "3388 S Centinela Ave"
                         :license_plate "VVHH"
                         :lng -118.43998232065427
-                        :timestamp_created "2016-10-17T20:51:54Z"}
+                        :timestamp_created 1476737514}
                        {:tire_pressure_fillup false
                         :vehicle_id "KmHDbvxQYKjcCX7EPJzM"
                         :total_price 4485
@@ -110,5 +109,5 @@
                         :address_street "10741 Westminster Ave"
                         :license_plate "VVHH"
                         :lng -118.41234483896481
-                        :timestamp_created "2016-10-17T20:50:46Z"}]}
+                        :timestamp_created 1476737446}]}
              body)))))

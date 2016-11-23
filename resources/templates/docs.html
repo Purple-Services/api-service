@@ -304,6 +304,12 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr class="required">
+                                <td>vehicle_id</td>
+                                <td>ID of vehicle</td>
+                                <td>A string</td>
+                                <td></td>
+                            </tr>
                             <tr>
                                 <td>sort</td>
                                 <td>Direction in which to sort orders chronologically (time created).</td>
@@ -328,24 +334,108 @@
                         Keys in red are <span class="required">required</span>.
                     </div>
                     
-                    <p style="display:none">
+                    <div id="example-availability-check" style="display: none;">
+                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET 'https://api.purpleapp.com/v1/availability?lat=34.031464&lng=-118.491809&vehicle_id=4clhMV0ewUMDB7O4460R' -u 123APIKEY:456USERAUTHKEY</code></pre>
+                        JSON Response:
+                        <pre class="snippet" data-language="json"><code>{
+   "success":true,
+   "availability":{
+      "time_choices":[
+         {
+            "fee":599,
+            "text":"within 1 hour ($5.99)",
+            "time":60
+         },
+         {
+            "fee":0,
+            "text":"within 3 hours (3 left)",
+            "time":180
+         }
+      ],
+      "gallon_choices":[
+         7.5,
+         10,
+         15
+      ],
+      "octane":"91",
+      "gas_price":339,
+      "tire_pressure_fillup_price":700
+   }
+}</code></pre>
+                    </div>
+
+                    
+                    <p>
                         Example GET request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-get-orders'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
                     </p>
                     
                     <div id="example-get-orders" style="display: none;">
-                        GET Request:
-                        <br /><span style="color: black;">https://api.purpleapp.com/v1/orders/get</span>
-                        <pre class="snippet" data-language="javascript"><code>{
-  "version": 1,
-  "key": "yekipa987654321",
-  "user_id": "G7yG674ftgebB987ncj8",
-  "auth_token": "Nmcbdhvid863hf7Gydh7hcudn3467678dufhBuxzke8734",
-  "lat": -118.27367287,
-  "lng": 34.053892
-}</code></pre>
+                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET 'https://api.purpleapp.com/v1/orders/get?limit=3&start=5&sort=desc&vehicle_id=KmHDbvxQYKjcCX7EPJzM' -u 123APIKEY:456USERAUTHKEY</code></pre>
                         JSON Response:
                         <pre class="snippet" data-language="javascript"><code>{
-  "success": true
+    "success": true,
+    "orders": [
+        {
+            "tire_pressure_fillup": false,
+            "vehicle_id": "KmHDbvxQYKjcCX7EPJzM",
+            "total_price": 5009,
+            "octane": "87",
+            "special_instructions": "",
+            "status": "cancelled",
+            "id": "Ir8Uydu4B1MkgV4urVsF",
+            "gas_price": 294,
+            "delivery_fee": 599,
+            "time_window_end": 1476766420,
+            "lat": 32.78127163485819,
+            "address_zip": "92109",
+            "gallons": 15,
+            "time_window_start": 1476762820,
+            "address_street": "Bayside Walk Pacific Beach",
+            "license_plate": "VVHH",
+            "lng": -117.23440447031247,
+            "timestamp_created": 1476737624
+        },
+        {
+            "tire_pressure_fillup": false,
+            "vehicle_id": "KmHDbvxQYKjcCX7EPJzM",
+            "total_price": 2650,
+            "octane": "87",
+            "special_instructions": "",
+            "status": "assigned",
+            "id": "aPlWLjXF2EWCYo1hS6LV",
+            "gas_price": 299,
+            "delivery_fee": 0,
+            "time_window_end": 1476773512,
+            "lat": 34.01338262284055,
+            "address_zip": "90066",
+            "gallons": 15,
+            "time_window_start": 1476762712,
+            "address_street": "3388 S Centinela Ave",
+            "license_plate": "VVHH",
+            "lng": -118.43998232065427,
+            "timestamp_created": 1476737514
+        },
+        {
+            "tire_pressure_fillup": false,
+            "vehicle_id": "KmHDbvxQYKjcCX7EPJzM",
+            "total_price": 4485,
+            "octane": "87",
+            "special_instructions": "",
+            "status": "complete",
+            "id": "7RSx4t1YjryzyutZKqhH",
+            "gas_price": 299,
+            "delivery_fee": 0,
+            "time_window_end": 1476773445,
+            "lat": 34.023484704499175,
+            "address_zip": "90034",
+            "gallons": 15,
+            "time_window_start": 1476762645,
+            "address_street": "10741 Westminster Ave",
+            "license_plate": "VVHH",
+            "lng": -118.41234483896481,
+            "timestamp_created": 1476737446
+        }
+    ]
 }</code></pre>
                     </div>
                     

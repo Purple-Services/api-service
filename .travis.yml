@@ -1,6 +1,5 @@
 language: clojure
 before_install:
-  - export TZ=UTC
   - cd ../
   - git clone git@github.com:Purple-Services/common.git
   - cd common

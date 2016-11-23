@@ -2,7 +2,7 @@
   (:require [common.config :as config]
             [common.db :refer [!select !insert mysql-escape-str]]
             [common.orders :refer [add]]
-            [common.util :refer [reverse-geocode]]
+            [common.util :refer [convert-timestamp reverse-geocode]]
             [clojure.set :refer [rename-keys]]
             [clojure.string :as s]))
 
@@ -20,18 +20,20 @@
                       :gas_type :octane}]
     (-> o
         (select-keys safe-keys)
-        (rename-keys key-old->new))))
+        (rename-keys key-old->new)
+        convert-timestamp)))
 
 (defn get-by-user
   "Gets a user's orders."
-  [db-conn user-id sort start limit]
+  [db-conn user-id vehicle-id sort start limit]
   {:success true
    :orders (into []
                  (map clean-order
                       (!select db-conn
                                "orders"
                                ["*"]
-                               {:user_id user-id}
+                               {:user_id user-id
+                                :vehicle_id vehicle-id}
                                :append (str "ORDER BY target_time_start " sort
                                             " LIMIT " start "," limit))))})
 
