@@ -64,7 +64,7 @@
 
 (defn available
   [user zip-def subscription octane]
-  {:time_choices (delivery-times-map user zip-def subscription (:delivery-fee zip-def))
+  {:time_limit_choices (delivery-times-map user zip-def subscription (:delivery-fee zip-def))
    :gallon_choices (conj (vals (:gallon-choices zip-def)) "fill")
    :octane octane
    :gas_price (get (:gas-price zip-def) octane)
@@ -76,7 +76,9 @@
   (let [user (users/get-user-by-id db-conn user-id)
         subscription (when (subscriptions/valid? user)
                        (subscriptions/get-with-usage db-conn user))
-        vehicle (first (!select db-conn "vehicles" ["gas_type"] {:id vehicle-id}))
+        vehicle (first (!select db-conn "vehicles" ["gas_type"]
+                                {:user_id user-id ; security
+                                 :id vehicle-id}))
         zip-code (:zip (reverse-geocode lat lng))]
     (if vehicle
       (if-let [zip-def (when zip-code (get-zip-def db-conn zip-code))]

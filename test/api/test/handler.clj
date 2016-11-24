@@ -27,7 +27,7 @@
   (testing "availability"
     (let [params {:lat "33.995632"
                   :lng "-118.474990"
-                  :vehicle_id "4clhMV0ewUMDB7O4460R"}
+                  :vehicle_id "KmHDbvxQYKjcCX7EPJzM"}
           response (app (->  (mock/request :get "/v1/availability")
                              (mock/query-string params)
                              (mock/header "Authorization" "Basic S0pQVzFiR25kRExFV1d1NUxwNUtKQWpndk1LS1NiSkE6c3FYd1RpaFZnVG9YMENkeTY1OW1DVksxZ1B6RjBBMThFR0VwSnRZbEdLQVVOa2dPR09zMnU3dE5UcUk2TGx0Q1VVWWhFdWJjdVQ1SWxQOFF0VFdLT0FLRkVYbTlWYlhWS1lWUmJoeTlTaWk5N3FqS2tsZ2JEa0NZMHY0UXF0Zk4=")
@@ -35,13 +35,13 @@
           body (parse-string (:body response) true)]
       (is (= {:success true,
               :availability
-              {:time_choices
+              {:time_limit_choices
                [{:fee 599, :text "within 1 hour ($5.99)", :time 60}
                 {:fee 399, :text "within 3 hours ($3.99)", :time 180}
                 {:fee 299, :text "within 5 hours ($2.99)", :time 300}],
                :gallon_choices ["fill" 7.5 10 15],
-               :octane "91",
-               :gas_price 339,
+               :octane "87",
+               :gas_price 312,
                :tire_pressure_fillup_price 700}}
              body))))
 
@@ -66,6 +66,7 @@
                         :gas_price 294
                         :delivery_fee 599
                         :time_window_end 1476766420
+                        :paid false
                         :lat 32.78127163485819
                         :address_zip "92109"
                         :gallons 15.0
@@ -84,6 +85,7 @@
                         :gas_price 299
                         :delivery_fee 0
                         :time_window_end 1476773512
+                        :paid false
                         :lat 34.01338262284055
                         :address_zip "90066"
                         :gallons 15.0
@@ -102,6 +104,7 @@
                         :gas_price 299
                         :delivery_fee 0
                         :time_window_end 1476773445
+                        :paid false
                         :lat 34.023484704499175
                         :address_zip "90034"
                         :gallons 15.0

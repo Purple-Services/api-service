@@ -10,6 +10,7 @@
             [api.auth :as auth]
             [api.dispatch :as dispatch]
             [api.orders :as orders]
+            [api.vehicles :as vehicles]
             [clojure.walk :refer [keywordize-keys]]
             [compojure.core :refer :all]
             [compojure.handler :as handler]
@@ -44,6 +45,19 @@
 
 (defroutes app-routes
   (context "/v1" []
+           (wrap-force-ssl
+            (defroutes availability-routes
+              (GET "/availability" req
+                   (response
+                    (let [params (keywordize-keys (:params req))
+                          db-conn (conn)]
+                      (with-auth db-conn req
+                        (fn [user-id]
+                          (dispatch/availability db-conn
+                                                 user-id
+                                                 (:lat params)
+                                                 (:lng params)
+                                                 (:vehicle_id params)))))))))
            (context "/orders" []
                     (wrap-force-ssl
                      (defroutes orders-routes
@@ -62,7 +76,7 @@
                                      (Integer. (:time_limit params))
                                      (if (= "fillup" (:gallons params))
                                        (:gallons params)
-                                       (Integer. (:gallons params)))
+                                       (coerce-double (:gallons params)))
                                      (Integer. (:gas_price params))
                                      (Integer. (:delivery_fee params))
                                      (:special_instructions params)))))))
@@ -85,19 +99,16 @@
                                     (if (s/blank? (:limit params))
                                       50
                                       (Integer. (:limit params))))))))))))
-           (wrap-force-ssl
-            (defroutes availability-routes
-              (GET "/availability" req
-                   (response
-                    (let [params (keywordize-keys (:params req))
-                          db-conn (conn)]
-                      (with-auth db-conn req
-                        (fn [user-id]
-                          (dispatch/availability db-conn
-                                                 user-id
-                                                 (:lat params)
-                                                 (:lng params)
-                                                 (:vehicle_id params))))))))))
+           (context "/vehicles" []
+                    (wrap-force-ssl
+                     (defroutes vehicles-routes
+                       (GET "/get" req
+                            (response
+                             (let [params (keywordize-keys (:params req))
+                                   db-conn (conn)]
+                               (with-auth db-conn req
+                                 (fn [user-id]
+                                   (vehicles/get-by-user db-conn user-id))))))))))
   ;; just a helpful utility
   (GET "/gen-id" [] (response {:success true
                                :id (rand-str-alpha-num 20)}))

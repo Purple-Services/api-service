@@ -49,7 +49,13 @@
                             <a href="#request-order">Request Order</a>
                         </li>
                         <li class="">
+                            <a href="#cancel-order">Cancel Order</a>
+                        </li>
+                        <li class="">
                             <a href="#get-orders">Get Orders</a>
+                        </li>
+                        <li class="">
+                            <a href="#get-vehicles">Get Vehicles</a>
                         </li>
                     </ul>
                 </div>
@@ -138,7 +144,7 @@
                         <pre class="snippet" data-language="json"><code>{
    "success":true,
    "availability":{
-      "time_choices":[
+      "time_limit_choices":[
          {
             "fee":599,
             "text":"within 1 hour ($5.99)",
@@ -162,7 +168,7 @@
 }</code></pre>
                     </div>
 
-                    <br />
+<br />
                     <h2 class="content-subhead">
                         <a name="request-order" />
                         Request Order
@@ -262,7 +268,50 @@
 }</code></pre>
                         JSON Response:
                         <pre class="snippet" data-language="javascript"><code>{
-  "success": true
+  "success": true,
+  "order_id": "234hj324k2334"
+}</code></pre>
+                    </div>
+                    
+                    <br />
+                    <h2 class="content-subhead">
+                        <a name="cancel-order" />
+                        Cancel Order
+                    </h2>
+                    <p>
+                        Cancel an order given its ID. You can only cancel orders that are in one of the following statuses: unassigned, assigned, accepted, or enroute.
+                    </p>
+
+                    <pre class="snippet" data-language="html"><code>[POST] https://api.purpleapp.com/v1/orders/cancel/[order_id]</code></pre>
+
+                    <table class="pure-table pure-table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Header</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="required">
+                                <td>Authorization</td>
+                                <td>(Basic Auth) Use your API Key as the username, and a User Auth Token as the password.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="table-legend-right">
+                        Keys in red are <span class="required">required</span>.
+                    </div>
+                    
+                    <p>
+                        Example POST request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-cancel-order'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
+                    </p>
+                    
+                    <div id="example-cancel-order" style="display: none;">
+                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET 'https://api.purpleapp.com/v1/orders/cancel/h738fjusye8nbds3' -u 123APIKEY:456USERAUTHKEY</code></pre>
+                        JSON Response:
+                        <pre class="snippet" data-language="javascript"><code>{
+    "success": true
 }</code></pre>
                     </div>
 
@@ -304,12 +353,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="required">
-                                <td>vehicle_id</td>
-                                <td>ID of vehicle</td>
-                                <td>A string</td>
-                                <td></td>
-                            </tr>
                             <tr>
                                 <td>sort</td>
                                 <td>Direction in which to sort orders chronologically (time created).</td>
@@ -328,42 +371,17 @@
                                 <td>An integer >= 0</td>
                                 <td>50</td>
                             </tr>
+                            <tr>
+                                <td>vehicle_id</td>
+                                <td>ID of vehicle</td>
+                                <td>A string</td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                     <div class="table-legend-right">
                         Keys in red are <span class="required">required</span>.
                     </div>
-                    
-                    <div id="example-availability-check" style="display: none;">
-                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET 'https://api.purpleapp.com/v1/availability?lat=34.031464&lng=-118.491809&vehicle_id=4clhMV0ewUMDB7O4460R' -u 123APIKEY:456USERAUTHKEY</code></pre>
-                        JSON Response:
-                        <pre class="snippet" data-language="json"><code>{
-   "success":true,
-   "availability":{
-      "time_choices":[
-         {
-            "fee":599,
-            "text":"within 1 hour ($5.99)",
-            "time":60
-         },
-         {
-            "fee":0,
-            "text":"within 3 hours (3 left)",
-            "time":180
-         }
-      ],
-      "gallon_choices":[
-         7.5,
-         10,
-         15
-      ],
-      "octane":"91",
-      "gas_price":339,
-      "tire_pressure_fillup_price":700
-   }
-}</code></pre>
-                    </div>
-
                     
                     <p>
                         Example GET request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-get-orders'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
@@ -434,6 +452,62 @@
             "license_plate": "VVHH",
             "lng": -118.41234483896481,
             "timestamp_created": 1476737446
+        }
+    ]
+}</code></pre>
+                    </div>
+                    <br />
+                    <h2 class="content-subhead">
+                        <a name="get-vehicles" />
+                        Get Vehicles
+                    </h2>
+                    <p>
+                        To get a list of all a user's vehicles.
+                    </p>
+
+                    <pre class="snippet" data-language="html"><code>[GET] https://api.purpleapp.com/v1/vehicles/get</code></pre>
+
+                    <table class="pure-table pure-table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Header</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="required">
+                                <td>Authorization</td>
+                                <td>(Basic Auth) Use your API Key as the username, and a User Auth Token as the password.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <br />
+                    
+                    <div class="table-legend-right">
+                        Keys in red are <span class="required">required</span>.
+                    </div>
+                    
+                    <p>
+                        Example GET request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-get-vehicles'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
+                    </p>
+                    
+                    <div id="example-get-vehicles" style="display: none;">
+                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET 'https://api.purpleapp.com/v1/vehicles/get' -u 123APIKEY:456USERAUTHKEY</code></pre>
+                        JSON Response:
+                        <pre class="snippet" data-language="javascript"><code>{
+    "success": true,
+    "vehicles": [
+        {
+            "id": "KmHDbvxQYKjcCX7EPJzM",
+            "year": "1990",
+            "make": "Buick",
+            "model": "Regal",
+            "color": "Silver",
+            "license_plate": "VVHH",
+            "vin": "1HGCM82633A004352",
+            "timestamp_created": 1467819390,
+            "octane": "87"
         }
     ]
 }</code></pre>

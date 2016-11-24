@@ -9,7 +9,7 @@
 (defn clean-order
   [o]
   (let [safe-keys [:id :tire_pressure_check :service_fee :target_time_start
-                   :target_time_end :vehicle_id :total_price
+                   :target_time_end :vehicle_id :total_price :paid
                    :special_instructions :status :gas_price :lat :address_zip
                    :lng :gallons :address_street :license_plate :gas_type
                    :timestamp_created]
@@ -32,8 +32,8 @@
                       (!select db-conn
                                "orders"
                                ["*"]
-                               {:user_id user-id
-                                :vehicle_id vehicle-id}
+                               (merge {:user_id user-id}
+                                      (when vehicle-id {:vehicle_id vehicle-id}))
                                :append (str "ORDER BY target_time_start " sort
                                             " LIMIT " start "," limit))))})
 
@@ -51,8 +51,11 @@
           :lng lng
           :address_street (:street geo-components)
           :address_zip (:zip geo-components)
+          :gallons gallons
           :gas_price gas-price
           :service_fee delivery-fee
-          :total_price ((comp (partial max 0) int #(Math/ceil %))
-                        (+ (* gas-price gallons)
-                           delivery-fee))})))
+          :total_price (if (= "fillup" gallons)
+                         7500 ; for fillups, auth $75
+                         ((comp (partial max 0) int #(Math/ceil %))
+                          (+ (* gas-price gallons)
+                             delivery-fee)))})))
