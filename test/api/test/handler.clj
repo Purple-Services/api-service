@@ -113,4 +113,19 @@
                         :license_plate "VVHH"
                         :lng -118.41234483896481
                         :timestamp_created 1476737446}]}
-             body)))))
+             body))))
+
+  (testing "order request"
+    (let [params {:lat "33.995632"
+                  :lng "-118.474990"
+                  :vehicle_id "KmHDbvxQYKjcCX7EPJzM"
+                  :time_limit 180
+                  :gallons 15
+                  :gas_price 312
+                  :delivery_fee 399}
+          response (app (->  (mock/request :post "/v1/orders/request")
+                             (mock/body (generate-string params))
+                             (mock/header "Authorization" "Basic S0pQVzFiR25kRExFV1d1NUxwNUtKQWpndk1LS1NiSkE6c3FYd1RpaFZnVG9YMENkeTY1OW1DVksxZ1B6RjBBMThFR0VwSnRZbEdLQVVOa2dPR09zMnU3dE5UcUk2TGx0Q1VVWWhFdWJjdVQ1SWxQOFF0VFdLT0FLRkVYbTlWYlhWS1lWUmJoeTlTaWk5N3FqS2tsZ2JEa0NZMHY0UXF0Zk4=")
+                             (mock/content-type "application/json")))
+          body (parse-string (:body response) true)]
+      (is (:success body)))))

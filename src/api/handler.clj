@@ -79,7 +79,8 @@
                                        (coerce-double (:gallons params)))
                                      (Integer. (:gas_price params))
                                      (Integer. (:delivery_fee params))
-                                     (:special_instructions params)))))))
+                                     (:special_instructions params))))
+                                )))
                        (GET "/get" req
                             (response
                              (let [params (keywordize-keys (:params req))
