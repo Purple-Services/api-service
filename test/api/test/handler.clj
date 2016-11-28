@@ -74,7 +74,7 @@
                         :address_street "Bayside Walk Pacific Beach"
                         :license_plate "VVHH"
                         :lng -117.23440447031247
-                        :timestamp_created 1476737624}
+                        :timestamp_created 1476762824}
                        {:tire_pressure_fillup false
                         :vehicle_id "KmHDbvxQYKjcCX7EPJzM"
                         :total_price 2650
@@ -93,7 +93,7 @@
                         :address_street "3388 S Centinela Ave"
                         :license_plate "VVHH"
                         :lng -118.43998232065427
-                        :timestamp_created 1476737514}
+                        :timestamp_created 1476762714}
                        {:tire_pressure_fillup false
                         :vehicle_id "KmHDbvxQYKjcCX7EPJzM"
                         :total_price 4485
@@ -112,7 +112,7 @@
                         :address_street "10741 Westminster Ave"
                         :license_plate "VVHH"
                         :lng -118.41234483896481
-                        :timestamp_created 1476737446}]}
+                        :timestamp_created 1476762646}]}
              body))))
 
   (testing "order request"
