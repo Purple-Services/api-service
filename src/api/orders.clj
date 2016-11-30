@@ -2,7 +2,8 @@
   (:require [common.config :as config]
             [common.db :refer [!select !insert mysql-escape-str]]
             [common.orders :refer [add]]
-            [common.util :refer [convert-timestamp reverse-geocode]]
+            [common.util :refer [convert-timestamp reverse-geocode
+                                 compute-total-price]]
             [clojure.set :refer [rename-keys]]
             [clojure.string :as s]))
 
@@ -41,7 +42,8 @@
 (defn request
   [db-conn user-id lat lng vehicle-id time-limit gallons gas-price
    delivery-fee special-instructions]
-  (let [geo-components (reverse-geocode lat lng)]
+  (let [geo-components (reverse-geocode lat lng)
+        is-fillup? (= "fillup" gallons)]
     (add db-conn
          user-id
          {:time time-limit
@@ -51,11 +53,11 @@
           :lng lng
           :address_street (:street geo-components)
           :address_zip (:zip geo-components)
-          :gallons gallons
+          :is_fillup is-fillup?
+          :gallons (if is-fillup? nil gallons)
           :gas_price gas-price
           :service_fee delivery-fee
-          :total_price (if (= "fillup" gallons)
+          :total_price (if is-fillup?
                          7500 ; for fillups, auth $75
-                         ((comp (partial max 0) int #(Math/ceil %))
-                          (+ (* gas-price gallons)
-                             delivery-fee)))})))
+                         (compute-total-price gas-price gallons delivery-fee))
+          })))

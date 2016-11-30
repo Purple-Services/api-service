@@ -47,8 +47,7 @@
                                      :db-name "ebdb_test"
                                      :db-port "3306"
                                      :db-user "root"
-                                     :db-password ""
-                                     :stripe-private-key "sk_test_6Nbxf0bpbBod335kK11SFGw3"}]}
+                                     :db-password ""}]}
   :test-selectors {:default (complement :integration)
                    :integration :integration}
   :aws {:beanstalk {:app-name "api"
