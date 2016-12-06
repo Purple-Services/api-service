@@ -99,7 +99,13 @@
                                       (Integer. (:start params)))
                                     (if (s/blank? (:limit params))
                                       50
-                                      (Integer. (:limit params))))))))))))
+                                      (Integer. (:limit params)))))))))
+                       (POST "/cancel/:id" [id :as req]
+                             (response
+                              (let [db-conn (conn)]
+                                (with-auth db-conn req
+                                  (fn [user-id]
+                                    (orders/cancel db-conn user-id id)))))))))
            (context "/vehicles" []
                     (wrap-force-ssl
                      (defroutes vehicles-routes

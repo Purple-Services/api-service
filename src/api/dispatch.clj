@@ -65,7 +65,7 @@
 (defn available
   [user zip-def subscription octane]
   {:time_limit_choices (delivery-times-map user zip-def subscription (:delivery-fee zip-def))
-   :gallon_choices (conj (vals (:gallon-choices zip-def)) "fill")
+   :gallon_choices (conj (vals (:gallon-choices zip-def)) "fillup")
    :octane octane
    :gas_price (get (:gas-price zip-def) octane)
    :tire_pressure_fillup_price (:tire-pressure-price zip-def)})
