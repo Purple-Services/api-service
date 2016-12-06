@@ -8,7 +8,7 @@
             [clojure.string :as s]))
 
 (defn delivery-time-map
-  "Build a map that describes a delivery time option for the mobile app."
+  "Build a map that describes all the delivery time options available."
   [time-str      ; e.g., "within 5 hours"
    delivery-fee  ; fee amount in cents
    num-free      ; number of free deliveries that subscription provides

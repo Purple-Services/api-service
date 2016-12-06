@@ -2,6 +2,12 @@
 
 [![Build Status](https://travis-ci.com/Purple-Services/api-service.svg?token=KufiHsrBkjKnC1q2gM5f&branch=dev)](https://travis-ci.com/Purple-Services/api-service)
 
+## Local Development
+
+Be sure to use your local profile for development with:
+
+    lein with-profile local ring server
+
 ## Deploying to Development Server
 
 The server is manually configured with the required System properties in the AWS console. Therefore, the top entry of src/purple/config.clj only sets vars when the environment is "test" or "dev".
