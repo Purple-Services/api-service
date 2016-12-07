@@ -56,8 +56,6 @@
                              (mock/content-type "application/json")))
           body (parse-string (:body response) true)
           _ (println "DEBUG:")
-          _ (println (env :stripe-private-key))
-          _ (println "DEBUG 2:")
           _ (println (System/getProperty "STRIPE_PRIVATE_KEY"))]
       (is (= {:success true
               :orders [{:tire_pressure_fillup false
