@@ -40,9 +40,9 @@
                        :injections
                        [(require 'pjstadig.humane-test-output)
                         (pjstadig.humane-test-output/activate!)]}]
-             :local [:shared :profiles/local]
-             :dev [:shared :profiles/dev]
-             :prod [:shared :profiles/prod]
+             ;; :local [:shared :profiles/local]
+             ;; :dev [:shared :profiles/dev]
+             ;; :prod [:shared :profiles/prod]
              :travis [:shared
                       {:env
                        {:env "local"
