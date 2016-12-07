@@ -13,7 +13,7 @@ before_install:
 script:
   - date
   - lein exec -p scripts/setupdb.clj root_password=
-  - lein test
+  - lein with-profile travis test
 notifications:
   slack:
     rooms:
