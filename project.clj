@@ -84,7 +84,7 @@
                              :courier-app-download-url-android ""
                              :test-db-host "localhost"
                              :test-db-name "ebdb_test"
-                             :test-db-port "3307"
+                             :test-db-port "3306"
                              :test-db-user "root"
                              :test-db-password ""}}]}
   :test-selectors {:default (complement :integration)
