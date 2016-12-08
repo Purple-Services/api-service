@@ -53,10 +53,7 @@
           response (app (->  (mock/request :get "/v1/orders/get")
                              (mock/query-string params)
                              (mock/header "Authorization" "Basic S0pQVzFiR25kRExFV1d1NUxwNUtKQWpndk1LS1NiSkE6c3FYd1RpaFZnVG9YMENkeTY1OW1DVksxZ1B6RjBBMThFR0VwSnRZbEdLQVVOa2dPR09zMnU3dE5UcUk2TGx0Q1VVWWhFdWJjdVQ1SWxQOFF0VFdLT0FLRkVYbTlWYlhWS1lWUmJoeTlTaWk5N3FqS2tsZ2JEa0NZMHY0UXF0Zk4=")
-                             (mock/content-type "application/json")))
-          body (parse-string (:body response) true)
-          _ (println "DEBUG:")
-          _ (println (System/getProperty "STRIPE_PRIVATE_KEY"))]
+                             (mock/content-type "application/json")))]
       (is (= {:success true
               :orders [{:tire_pressure_fillup false
                         :vehicle_id "KmHDbvxQYKjcCX7EPJzM"
