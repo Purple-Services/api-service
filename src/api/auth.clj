@@ -10,7 +10,7 @@
   was raised."
   [direction-fn string]
   (try
-    (apply str (map char (direction-fn (.getBytes string))))
+    (s/join (map char (direction-fn (.getBytes string))))
     (catch Exception _)))
 
 (defn- encode-base64

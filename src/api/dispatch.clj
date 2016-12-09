@@ -14,9 +14,9 @@
    num-free      ; number of free deliveries that subscription provides
    num-free-used ; number of free deliveries already used in this period
    sub-discount] ; the discount the subscription gives after all free used
-  (let [fee-str #(if (= % 0) "free" (str "$" (cents->dollars-str %)))
+  (let [fee-str #(if (zero? %) "free" (str "$" (cents->dollars-str %)))
         gen-text #(str time-str " (" % ")")]
-    (if (not (nil? num-free))
+    (if-not (nil? num-free)
       ;; is using a subscription
       (let [num-free-left (- num-free num-free-used)]
         (if (pos? num-free-left)
@@ -37,30 +37,28 @@
   "Given subscription usage map and service fee, create the delivery-times map."
   [user zip-def sub delivery-fees]
   (let [has-free-three-hour? (pos? (or (:num_free_three_hour sub) 0))
-        has-free-one-hour? (pos? (or (:num_free_one_hour sub) 0))]
-    (->> (remove #(or (and (= 300 (val %))
-                           ;; hide 5-hour option if using 1 or 3-hour sub
-                           (or has-free-three-hour? has-free-one-hour?))
-                      (and (= 180 (val %))
-                           ;; hide 3-hour option if using 1-hour sub
-                           (or has-free-one-hour?)))
-                 (:time-choices zip-def))
-         (#(for [[k v] %
-                 :let [[num-as-word time-str]
-                       (case v
-                         300 ["five" "within 5 hours"]
-                         180 ["three" "within 3 hours"]
-                         60  ["one" "within 1 hour"])]]
-             (assoc (delivery-time-map
-                     time-str
-                     (get delivery-fees v)
-                     (((comp keyword str) "num_free_" num-as-word "_hour")
-                      sub)
-                     (((comp keyword str) "num_free_" num-as-word "_hour_used")
-                      sub)
-                     (((comp keyword str) "discount_" num-as-word "_hour")
-                      sub))
-                    :time v))))))
+        has-free-one-hour? (pos? (or (:num_free_one_hour sub) 0))
+        time-choices (remove #(or (and (= 300 (val %)) ; Standard & Express hide 5-hour
+                                       (or has-free-three-hour? has-free-one-hour?))
+                                  (and (= 180 (val %)) ; Express hide 3-hour
+                                       (or has-free-one-hour?)))
+                             (:time-choices zip-def))]
+    (for [[k v] time-choices
+          :let [[num-as-word time-str]
+                (case v
+                  300 ["five" "within 5 hours"]
+                  180 ["three" "within 3 hours"]
+                  60  ["one" "within 1 hour"])]]
+      (assoc (delivery-time-map
+              time-str
+              (get delivery-fees v)
+              (((comp keyword str) "num_free_" num-as-word "_hour")
+               sub)
+              (((comp keyword str) "num_free_" num-as-word "_hour_used")
+               sub)
+              (((comp keyword str) "discount_" num-as-word "_hour")
+               sub))
+             :time v))))
 
 (defn available
   [user zip-def subscription octane]
