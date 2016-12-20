@@ -41,26 +41,32 @@
 (defn request
   [db-conn user-id lat lng vehicle-id time-limit gallons gas-price
    delivery-fee special-instructions]
-  (let [geo-components (reverse-geocode lat lng)
-        is-fillup? (= "fillup" gallons)]
-    (orders/add db-conn
-                user-id
-                {:time time-limit
-                 :vehicle_id vehicle-id
-                 :special_instructions special-instructions
-                 :lat lat
-                 :lng lng
-                 :address_street (:street geo-components)
-                 :address_zip (:zip geo-components)
-                 :is_fillup is-fillup?
-                 :gallons (if is-fillup? nil gallons)
-                 :gas_price gas-price
-                 :service_fee delivery-fee
-                 :total_price (if is-fillup?
-                                7500 ; for fillups, auth $75
-                                (compute-total-price gas-price gallons delivery-fee))
-                 })))
+  (if-let [geo-components (reverse-geocode lat lng)]
+    (let [is-fillup? (= "fillup" gallons)]
+      (orders/add
+       db-conn
+       user-id
+       {:time time-limit
+        :vehicle_id vehicle-id
+        :special_instructions special-instructions
+        :lat lat
+        :lng lng
+        :address_street (:street geo-components)
+        :address_zip (:zip geo-components)
+        :is_fillup is-fillup?
+        :gallons (if is-fillup? nil gallons)
+        :gas_price gas-price
+        :service_fee delivery-fee
+        :total_price (if is-fillup?
+                       7500 ; for fillups, auth $75
+                       (compute-total-price gas-price
+                                            gallons
+                                            delivery-fee))}))
+    {:success false
+     :message "Sorry, we were unable to determine your location."
+     :code "invalid-latlng"}))
 
 (defn cancel
   [db-conn user-id order-id]
-  (select-keys (orders/cancel db-conn user-id order-id) [:success :message]))
+  (select-keys (orders/cancel db-conn user-id order-id)
+               [:success :message :code]))

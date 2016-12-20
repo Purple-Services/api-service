@@ -1,4 +1,4 @@
-(defproject api "0.1.0-SNAPSHOT"
+(defproject api "0.1.1-SNAPSHOT"
   :description "Purple API web service."
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [compojure "1.1.8"]
@@ -21,6 +21,7 @@
                  [ring/ring-ssl "0.2.1"]
                  [ring-basic-authentication "1.0.5"]
                  [org.clojure/algo.generic "0.1.2"]
+                 [bouncer "1.0.0"]
                  [common "2.0.2-SNAPSHOT"]]
   :pedantic? false
   :plugins [[lein-ring "0.8.13"]

@@ -83,14 +83,18 @@
         (if (is-open-now? zip-def)
           {:success true
            ;; todo - get vehicle octane
-           :availability (available user zip-def subscription (:gas_type vehicle))}
+           :availability (available user zip-def subscription
+                                    (:gas_type vehicle))}
           {:success false
-           :message (:closed-message zip-def)})
-        ;; We don't service this ZIP code at all.
+           :message (:closed-message zip-def)
+           :code "outside-service-hours"})
+        ;; we don't service this ZIP code at all
         {:success false
          :message (str "Sorry, we are unable to deliver gas to your "
                        "location. We are rapidly expanding our service "
                        "area and hope to offer service to your "
-                       "location very soon.")})
+                       "location very soon.")
+         :code "outside-service-area"})
       {:success false
-       :message "Sorry, we don't recognize your vehicle information."})))
+       :message "Sorry, we don't recognize your vehicle information."
+       :code "invalid-vehicle-id"})))

@@ -39,9 +39,11 @@
       (if-let [user-id (auth/user-auth-token->user-id db-conn user-auth-token)]
         (f user-id)
         {:success false
-         :message "Invalid User Auth Token."})
+         :message "Invalid User Auth Token."
+         :code "invalid-user-auth-token"})
       {:success false
-       :message "Invalid API Key."})))
+       :message "Invalid API Key."
+       :code "invalid-api-key"})))
 
 (defroutes app-routes
   (context "/v1" []
