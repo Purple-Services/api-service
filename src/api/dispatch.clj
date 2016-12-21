@@ -1,10 +1,12 @@
 (ns api.dispatch
   (:require [common.db :refer [conn !select !insert !update]]
             [common.util :refer [cents->dollars-str in? catch-notify
-                                 reverse-geocode]]
+                                 reverse-geocode coerce-double]]
             [common.users :as users]
             [common.zones :refer [get-zip-def is-open-now? order->zones]]
             [common.subscriptions :as subscriptions]
+            [bouncer.core :as bouncer]
+            [bouncer.validators :as v]
             [clojure.string :as s]))
 
 (defn delivery-time-map
@@ -71,30 +73,42 @@
 (defn availability
   "Get an availability map to tell client what orders it can offer to user."
   [db-conn user-id lat lng vehicle-id]
-  (let [user (users/get-user-by-id db-conn user-id)
-        subscription (when (subscriptions/valid? user)
-                       (subscriptions/get-with-usage db-conn user))
-        vehicle (first (!select db-conn "vehicles" ["gas_type"]
-                                {:user_id user-id ; security
-                                 :id vehicle-id}))
-        zip-code (:zip (reverse-geocode lat lng))]
-    (if vehicle
-      (if-let [zip-def (when zip-code (get-zip-def db-conn zip-code))]
-        (if (is-open-now? zip-def)
-          {:success true
-           ;; todo - get vehicle octane
-           :availability (available user zip-def subscription
-                                    (:gas_type vehicle))}
+  (if-let [input-errors (first
+                         (bouncer/validate
+                          {:lat (try (Double/parseDouble (str lat))
+                                     (catch Exception e 99999))
+                           :lng (try (Double/parseDouble (str lng))
+                                     (catch Exception e 99999))
+                           :vehicle_id vehicle-id}
+                          :lat [v/required [v/in-range [-180 180]]]
+                          :lng [v/required [v/in-range [-180 180]]]
+                          :vehicle_id [v/required]))]
+    {:success false
+     :message (str (s/join ". " (flatten (vals input-errors))) ".")
+     :code "invalid-input"}
+    (let [user (users/get-user-by-id db-conn user-id)
+          subscription (when (subscriptions/valid? user)
+                         (subscriptions/get-with-usage db-conn user))
+          vehicle (first (!select db-conn "vehicles" ["gas_type"]
+                                  {:user_id user-id ; security
+                                   :id vehicle-id}))
+          zip-code (:zip (reverse-geocode lat lng))]
+      (if vehicle
+        (if-let [zip-def (when zip-code (get-zip-def db-conn zip-code))]
+          (if (is-open-now? zip-def)
+            {:success true
+             :availability (available user zip-def subscription
+                                      (:gas_type vehicle))}
+            {:success false
+             :message (:closed-message zip-def)
+             :code "outside-service-hours"})
+          ;; we don't service this ZIP code at all
           {:success false
-           :message (:closed-message zip-def)
-           :code "outside-service-hours"})
-        ;; we don't service this ZIP code at all
+           :message (str "Sorry, we are unable to deliver gas to your "
+                         "location. We are rapidly expanding our service "
+                         "area and hope to offer service to your "
+                         "location very soon.")
+           :code "outside-service-area"})
         {:success false
-         :message (str "Sorry, we are unable to deliver gas to your "
-                       "location. We are rapidly expanding our service "
-                       "area and hope to offer service to your "
-                       "location very soon.")
-         :code "outside-service-area"})
-      {:success false
-       :message "Sorry, we don't recognize your vehicle information."
-       :code "invalid-vehicle-id"})))
+         :message "Sorry, we don't recognize your vehicle information."
+         :code "invalid-vehicle-id"}))))

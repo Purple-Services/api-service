@@ -92,8 +92,8 @@
                                     db-conn
                                     user-id
                                     (:vehicle_id params)
-                                    (if (= "asc" (:sort params))
-                                      "asc"
+                                    (if-not (s/blank? (:sort params))
+                                      (:sort params)
                                       "desc")
                                     (if (s/blank? (:start params))
                                       0
