@@ -31,7 +31,8 @@
          :auto-reload? true
          :auto-refresh? true
          :reload-paths ["src" "resources" "checkouts"]}
-  :profiles {:shared [{:dependencies
+  :profiles {:default [:base :system :user :provided :local]
+             :shared [{:dependencies
                        [[javax.servlet/servlet-api "2.5"]
                         [ring/ring-mock "0.3.0"]
                         [org.seleniumhq.selenium/selenium-java "2.47.1"]

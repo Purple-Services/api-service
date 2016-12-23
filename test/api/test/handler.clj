@@ -129,3 +129,4 @@
                              (mock/content-type "application/json")))
           body (parse-string (:body response) true)]
       (is (:success body)))))
+
