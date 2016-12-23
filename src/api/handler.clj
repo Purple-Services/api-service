@@ -27,10 +27,13 @@
 (defn wrap-xml [resp]
   (header resp "Content-Type" "text/xml; charset=utf-8"))
 
-(defn wrap-force-ssl [resp]
-  (if config/has-ssl?
-    (wrap-ssl-redirect resp)
-    resp))
+(defmacro demand-ssl
+  [req & body]
+  `(if (and ~config/has-ssl? (not= :https (:scheme ~req)))
+     {:success false
+      :message "Please use https protocol."
+      :code "https-required"}
+     (do ~@body)))
 
 (defn with-auth
   [db-conn req f]
@@ -47,10 +50,11 @@
 
 (defroutes app-routes
   (context "/v1" []
-           (wrap-force-ssl
-            (defroutes availability-routes
-              (GET "/availability" req
-                   (response
+           (defroutes availability-routes
+             (GET "/availability" req
+                  (response
+                   (demand-ssl
+                    req
                     (let [params (keywordize-keys (:params req))
                           db-conn (conn)]
                       (with-auth db-conn req
@@ -61,10 +65,11 @@
                                                  (:lng params)
                                                  (:vehicle_id params)))))))))
            (context "/orders" []
-                    (wrap-force-ssl
-                     (defroutes orders-routes
-                       (POST "/request" req
-                             (response
+                    (defroutes orders-routes
+                      (POST "/request" req
+                            (response
+                             (demand-ssl
+                              req
                               (let [params (keywordize-keys (:body req))
                                     db-conn (conn)]
                                 (with-auth db-conn req
@@ -81,9 +86,11 @@
                                        (coerce-double (:gallons params)))
                                      (Integer. (:gas_price params))
                                      (Integer. (:delivery_fee params))
-                                     (:special_instructions params)))))))
-                       (GET "/get" req
-                            (response
+                                     (:special_instructions params))))))))
+                      (GET "/get" req
+                           (response
+                            (demand-ssl
+                             req
                              (let [params (keywordize-keys (:params req))
                                    db-conn (conn)]
                                (with-auth db-conn req
@@ -100,18 +107,21 @@
                                       (Integer. (:start params)))
                                     (if (s/blank? (:limit params))
                                       50
-                                      (Integer. (:limit params)))))))))
-                       (POST "/cancel/:id" [id :as req]
-                             (response
+                                      (Integer. (:limit params))))))))))
+                      (POST "/cancel/:id" [id :as req]
+                            (response
+                             (demand-ssl
+                              req
                               (let [db-conn (conn)]
                                 (with-auth db-conn req
                                   (fn [user-id]
                                     (orders/cancel db-conn user-id id)))))))))
            (context "/vehicles" []
-                    (wrap-force-ssl
-                     (defroutes vehicles-routes
-                       (GET "/get" req
-                            (response
+                    (defroutes vehicles-routes
+                      (GET "/get" req
+                           (response
+                            (demand-ssl
+                             req
                              (let [params (keywordize-keys (:params req))
                                    db-conn (conn)]
                                (with-auth db-conn req
