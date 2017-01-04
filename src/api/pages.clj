@@ -20,9 +20,9 @@
   [:#main-heading] (content (:title x))
   [:code] (transform-content (replace-vars {:base-url config/base-url})))
 
-(def is-sandbox? (.contains config/base-url "sandbox"))
-
 (defn docs []
-  (s/join (docs-template {:title (if is-sandbox?
+  (s/join (docs-template {:title (if (.contains config/base-url "sandbox")
                                    "Purple Sandbox API Docs"
                                    "Purple API Docs")})))
+
+

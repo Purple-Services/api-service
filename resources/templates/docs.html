@@ -133,6 +133,34 @@
                     <div class="table-legend-right">
                         Keys in red are <span class="required">required</span>.
                     </div>
+
+                    <br />
+                    <table class="pure-table pure-table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Error Code</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>invalid-input</td>
+                                <td>One or more parameters have an invalid value or a required parameter is missing.</td>
+                            </tr>
+                            <tr>
+                                <td>outside-service-hours</td>
+                                <td>Delivery is unvailable due to the service hours for that location.</td>
+                            </tr>
+                            <tr>
+                                <td>outside-service-area</td>
+                                <td>We don't service the specified location.</td>
+                            </tr>
+                            <tr>
+                                <td>invalid-vehicle-id</td>
+                                <td>The given vehicle_id did not return any results with that User Auth Token.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     
                     <p>
                         Example GET request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-availability-check'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
@@ -265,6 +293,50 @@
                     <div class="table-legend-right">
                         Keys in red are <span class="required">required</span>.
                     </div>
+
+                    <br />
+                    <table class="pure-table pure-table-bordered">
+                        <thead>
+                            <tr>
+                                <th width="160">Error Code</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>invalid-input</td>
+                                <td>One or more parameters have an invalid value or a required parameter is missing.</td>
+                            </tr>
+                            <tr>
+                                <td>invalid-latlng</td>
+                                <td>We were unable to resolve the given lat lng to an address. (very rare)</td>
+                            </tr>
+                            <tr>
+                                <td>invalid-price</td>
+                                <td>The given price (gas_price or delivery_fee) does not match the current price in our system. Perhaps the price changed recently. Usually will require going back to get an updated /availability.</td>
+                            </tr>
+                            <tr>
+                                <td>invalid-time-choice</td>
+                                <td>That time choice is not available. E.g., the one-hour delivery (60) time choice may be unavailable during high demand.</td>
+                            </tr>
+                            <tr>
+                                <td>outside-service-hours</td>
+                                <td>Delivery is unvailable due to the service hours for that location.</td>
+                            </tr>
+                            <tr>
+                                <td>outside-service-area</td>
+                                <td>We don't service the specified location.</td>
+                            </tr>
+                            <tr>
+                                <td>charge-auth-failed</td>
+                                <td>We were unable to authorize a charge on their card.</td>
+                            </tr>
+                            <tr>
+                                <td>invalid-vehicle-id</td>
+                                <td>The given vehicle_id did not return any results with that User Auth Token.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     
                     <p>
                         Example POST request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-request-order'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
@@ -317,6 +389,30 @@
                     <div class="table-legend-right">
                         Keys in red are <span class="required">required</span>.
                     </div>
+
+                    <br />
+                    <table class="pure-table pure-table-bordered">
+                        <thead>
+                            <tr>
+                                <th width="130">Error Code</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>already-cancelled</td>
+                                <td>That order has already been cancelled.</td>
+                            </tr>
+                            <tr>
+                                <td>too-late-to-cancel</td>
+                                <td>The status of the order has advanced too far to allow a cancel. (i.e., "servicing" or "complete")</td>
+                            </tr>
+                            <tr>
+                                <td>invalid-order-id</td>
+                                <td>The given order_id did not return any results with that User Auth Token.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     
                     <p>
                         Example POST request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-cancel-order'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
@@ -333,7 +429,8 @@
 
 {
     "success": false,
-    "message": "Sorry, it is too late for this order to be cancelled."
+    "message": "Sorry, it is too late for this order to be cancelled.",
+    "code": "too-late-to-cancel"
 }</code></pre>
                     </div>
 
@@ -404,6 +501,22 @@
                     <div class="table-legend-right">
                         Keys in red are <span class="required">required</span>.
                     </div>
+
+                    <br />
+                    <table class="pure-table pure-table-bordered">
+                        <thead>
+                            <tr>
+                                <th width="130">Error Code</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>invalid-input</td>
+                                <td>One or more parameters have an invalid value.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                     
                     <p>
                         Example GET request and JSON response: <a href="javascript:(function(){var el=document.getElementById('example-get-orders'); el.style.display = (el.style.display === 'block' ? 'none' : 'block');})();">(show/hide)</a>
