@@ -1,7 +1,8 @@
 (ns api.pages
   (:require [common.config :as config]
             [clojure.string :as s]
-            [net.cgrand.enlive-html :refer [content deftemplate set-attr]]))
+            [net.cgrand.enlive-html :refer [content deftemplate set-attr
+                                            replace-vars transform-content]]))
 
 (deftemplate index-template "templates/index.html"
   [x]
@@ -15,7 +16,13 @@
 
 (deftemplate docs-template "templates/docs.html"
   [x]
-  [:title] (content (:title x)))
+  [:title] (content (:title x))
+  [:#main-heading] (content (:title x))
+  [:code] (transform-content (replace-vars {:base-url config/base-url})))
+
+(def is-sandbox? (.contains config/base-url "sandbox"))
 
 (defn docs []
-  (s/join (docs-template {:title "Purple API Docs"})))
+  (s/join (docs-template {:title (if is-sandbox?
+                                   "Purple Sandbox API Docs"
+                                   "Purple API Docs")})))

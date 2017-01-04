@@ -64,7 +64,7 @@
             <div class="pure-u-1" id="main">
 
                 <div class="header">
-                    <h1>Purple API Docs</h1>
+                    <h1 id="main-heading">MAIN HEADING</h1>
                     <h2></h2>
                     <p>
                         
@@ -81,7 +81,7 @@
                         To find out the availabile options for delivery to a certain location. Requires an active user session.
                     </p>
 
-                    <pre class="snippet" data-language="html"><code>[GET] https://api.purpleapp.com/v1/availability</code></pre>
+                    <pre class="snippet" data-language="html"><code>[GET] ${base-url}v1/availability</code></pre>
 
                     <table class="pure-table pure-table-bordered">
                         <thead>
@@ -139,7 +139,7 @@
                     </p>
                     
                     <div id="example-availability-check" style="display: none;">
-                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET 'https://api.purpleapp.com/v1/availability?lat=34.031464&lng=-118.491809&vehicle_id=4clhMV0ewUMDB7O4460R' -u 123APIKEY:456USERAUTHKEY</code></pre>
+                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET '${base-url}v1/availability?lat=34.031464&lng=-118.491809&vehicle_id=4clhMV0ewUMDB7O4460R' -u 123APIKEY:456USERAUTHKEY</code></pre>
                         JSON Response:
                         <pre class="snippet" data-language="json"><code>{
    "success":true,
@@ -177,7 +177,7 @@
                         To make an order request given certain parameters. Usually this endpoint is used after an Availability Check so that a user has been presented with the options available at their location.
                     </p>
 
-                    <pre class="snippet" data-language="html"><code>[POST] https://api.purpleapp.com/v1/orders/request</code></pre>
+                    <pre class="snippet" data-language="html"><code>[POST] ${base-url}v1/orders/request</code></pre>
 
                     <table class="pure-table pure-table-bordered">
                         <thead>
@@ -271,7 +271,7 @@
                     </p>
                     
                     <div id="example-request-order" style="display: none;">
-                        <pre class="snippet" data-language="smalltalk"><code>curl -X POST https://api.purpleapp.com/v1/orders/request -u APIKEY:USERAUTHKEY -H 'Content-Type: application/json' -d '{"lat": 34.049803,       
+                        <pre class="snippet" data-language="smalltalk"><code>curl -X POST ${base-url}v1/orders/request -u APIKEY:USERAUTHKEY -H 'Content-Type: application/json' -d '{"lat": 34.049803,       
  "lng": -118.430745,
  "vehicle_id": "KmHDbvxQYKjcCX7EPJzM",
  "time_limit": 300,
@@ -297,7 +297,7 @@
                         Cancel an order given its ID. You can only cancel orders that are in one of the following statuses: unassigned, assigned, accepted, or enroute.
                     </p>
 
-                    <pre class="snippet" data-language="html"><code>[POST] https://api.purpleapp.com/v1/orders/cancel/[order_id]</code></pre>
+                    <pre class="snippet" data-language="html"><code>[POST] ${base-url}v1/orders/cancel/[order_id]</code></pre>
 
                     <table class="pure-table pure-table-bordered">
                         <thead>
@@ -323,7 +323,7 @@
                     </p>
                     
                     <div id="example-cancel-order" style="display: none;">
-                        <pre class="snippet" data-language="smalltalk"><code>curl -X POST 'https://api.purpleapp.com/v1/orders/cancel/h738fjusye8nbds3' -u APIKEY:USERAUTHKEY</code></pre>
+                        <pre class="snippet" data-language="smalltalk"><code>curl -X POST '${base-url}v1/orders/cancel/h738fjusye8nbds3' -u APIKEY:USERAUTHKEY</code></pre>
                         JSON Response:
                         <pre class="snippet" data-language="javascript"><code>{
     "success": true
@@ -346,7 +346,7 @@
                         To get a list of a user's past and current orders along with the details of each order.
                     </p>
 
-                    <pre class="snippet" data-language="html"><code>[GET] https://api.purpleapp.com/v1/orders/get</code></pre>
+                    <pre class="snippet" data-language="html"><code>[GET] ${base-url}v1/orders/get</code></pre>
 
                     <table class="pure-table pure-table-bordered">
                         <thead>
@@ -410,7 +410,7 @@
                     </p>
                     
                     <div id="example-get-orders" style="display: none;">
-                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET 'https://api.purpleapp.com/v1/orders/get?limit=3&start=5&sort=desc&vehicle_id=KmHDbvxQYKjcCX7EPJzM' -u 123APIKEY:456USERAUTHKEY</code></pre>
+                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET '${base-url}v1/orders/get?limit=3&start=5&sort=desc&vehicle_id=KmHDbvxQYKjcCX7EPJzM' -u 123APIKEY:456USERAUTHKEY</code></pre>
                         JSON Response:
                         <pre class="snippet" data-language="javascript"><code>{
     "success": true,
@@ -487,7 +487,7 @@
                         To get a list of all a user's vehicles.
                     </p>
 
-                    <pre class="snippet" data-language="html"><code>[GET] https://api.purpleapp.com/v1/vehicles/get</code></pre>
+                    <pre class="snippet" data-language="html"><code>[GET] ${base-url}v1/vehicles/get</code></pre>
 
                     <table class="pure-table pure-table-bordered">
                         <thead>
@@ -515,7 +515,7 @@
                     </p>
                     
                     <div id="example-get-vehicles" style="display: none;">
-                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET 'https://api.purpleapp.com/v1/vehicles/get' -u 123APIKEY:456USERAUTHKEY</code></pre>
+                        <pre class="snippet" data-language="smalltalk"><code>curl --request GET '${base-url}v1/vehicles/get' -u 123APIKEY:456USERAUTHKEY</code></pre>
                         JSON Response:
                         <pre class="snippet" data-language="javascript"><code>{
     "success": true,
