@@ -257,14 +257,13 @@
 
 (deftest vehicles-routes
   (testing "get all of a user's vehicles"
-    (is (= {:success true,
-            :vehicles
-            [{:id "KmHDbvxQYKjcCX7EPJzM",
-              :year "1990",
-              :make "Buick",
-              :model "Regal",
-              :color "Silver",
-              :license_plate "VVHH",
-              :timestamp_created 1467819390,
-              :octane "87"}]}
-           (mock-get-with-auth "vehicles/get" {})))))
+    (is (=submap (mock-get-with-auth "vehicles/get" {})
+                 {:success true,
+                  :vehicles
+                  [{:id "KmHDbvxQYKjcCX7EPJzM",
+                    :year "1990",
+                    :make "Buick",
+                    :model "Regal",
+                    :color "Silver",
+                    :license_plate "VVHH",
+                    :octane "87"}]}))))
