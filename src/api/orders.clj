@@ -53,7 +53,7 @@
 
 (defn request
   [db-conn user-id lat lng vehicle-id time-limit gallons gas-price
-   delivery-fee special-instructions]
+   delivery-fee special-instructions street-address-override]
   (if-let [input-errors (first
                          (bouncer/validate
                           {:lat (try (Double/parseDouble (str lat))
@@ -82,7 +82,7 @@
          user-id
          {:time time-limit
           :vehicle_id vehicle-id 
-          :special_instructions special-instructions
+          :special_instructions (or special-instructions "")
           :lat lat
           :lng lng
           :address_street (:street geo-components)
@@ -95,7 +95,8 @@
                          7500 ; for fillups, auth $75
                          (compute-total-price gas-price
                                               gallons
-                                              delivery-fee))}))
+                                              delivery-fee))}
+         :street-address-override street-address-override))
       {:success false
        :message "Sorry, we were unable to determine your location."
        :code "invalid-latlng"})))

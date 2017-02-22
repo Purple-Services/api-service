@@ -86,7 +86,8 @@
                                        (coerce-double (:gallons params)))
                                      (Integer. (:gas_price params))
                                      (Integer. (:delivery_fee params))
-                                     (:special_instructions params))))))))
+                                     (:special_instructions params)
+                                     (:street_address params))))))))
                       (GET "/get" req
                            (response
                             (demand-ssl
